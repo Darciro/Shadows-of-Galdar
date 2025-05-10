@@ -1,0 +1,44 @@
+# ========== Unity Generated Folders ==========
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+MemoryCaptures/
+Assets/StreamingAssets/aa.meta
+
+# ========== Unity Cache ==========
+*.pidb
+*.booproj
+*.suo
+*.user
+*.userprefs
+*.csproj
+*.unityproj
+*.dll
+*.exe
+
+# ========== VS / Rider ==========
+.vs/
+.idea/
+*.sln
+*.sln.DotSettings
+*.userprefs
+
+# ========== OS-Specific ==========
+.DS_Store
+Thumbs.db
+
+# ========== Platform-Specific ==========
+*.apk
+*.aab
+*.xcworkspace
+*.xcodeproj
+*.pbxproj
+*.xcuserdata
+*.tmproj
+
+# ========== Imports ==========
+Assets/_Imports/

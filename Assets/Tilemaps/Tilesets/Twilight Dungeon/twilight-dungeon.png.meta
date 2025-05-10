@@ -1,0 +1,936 @@
+fileFormatVersion: 2
+guid: fecbf19f9f434684db25f820ad534b30
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7104324636975915555
+    second: twilight-dungeon_0
+  - first:
+      213: 1520866125025485979
+    second: twilight-dungeon_1
+  - first:
+      213: -1571184627532597628
+    second: twilight-dungeon_2
+  - first:
+      213: 5348827698039423862
+    second: twilight-dungeon_3
+  - first:
+      213: -5968512513541593417
+    second: twilight-dungeon_4
+  - first:
+      213: 8185605428335463074
+    second: twilight-dungeon_5
+  - first:
+      213: -5635008661337355549
+    second: twilight-dungeon_6
+  - first:
+      213: 1870515962632538651
+    second: twilight-dungeon_7
+  - first:
+      213: 5487597356210180926
+    second: twilight-dungeon_8
+  - first:
+      213: 2451678187966869749
+    second: twilight-dungeon_9
+  - first:
+      213: -8694368425338360353
+    second: twilight-dungeon_10
+  - first:
+      213: -963906024885908561
+    second: twilight-dungeon_11
+  - first:
+      213: -2552684018615262109
+    second: twilight-dungeon_12
+  - first:
+      213: 4501963089543264201
+    second: twilight-dungeon_13
+  - first:
+      213: 6011420214655839369
+    second: twilight-dungeon_14
+  - first:
+      213: 2954905651815014359
+    second: twilight-dungeon_15
+  - first:
+      213: 3922357110183356195
+    second: twilight-dungeon_16
+  - first:
+      213: 2869706957568922724
+    second: twilight-dungeon_17
+  - first:
+      213: 4602396067306415590
+    second: twilight-dungeon_18
+  - first:
+      213: 6226685194943243591
+    second: twilight-dungeon_19
+  - first:
+      213: -315946273766244024
+    second: twilight-dungeon_20
+  - first:
+      213: 6320597247847785597
+    second: twilight-dungeon_21
+  - first:
+      213: -6758518757441142490
+    second: twilight-dungeon_22
+  - first:
+      213: -7362842702952997661
+    second: twilight-dungeon_23
+  - first:
+      213: 8540746585529816303
+    second: twilight-dungeon_24
+  - first:
+      213: 3536896986030684014
+    second: twilight-dungeon_25
+  - first:
+      213: 5338529071642484321
+    second: twilight-dungeon_26
+  - first:
+      213: 2641141324955978680
+    second: twilight-dungeon_27
+  - first:
+      213: 6907982488276358045
+    second: twilight-dungeon_28
+  - first:
+      213: -4725473414783764834
+    second: twilight-dungeon_29
+  - first:
+      213: -600644404603092981
+    second: twilight-dungeon_30
+  - first:
+      213: 4560461184350961204
+    second: twilight-dungeon_31
+  - first:
+      213: -8005203396266223091
+    second: twilight-dungeon_32
+  - first:
+      213: -206711716779114640
+    second: twilight-dungeon_33
+  - first:
+      213: -1776630623732043921
+    second: twilight-dungeon_34
+  - first:
+      213: -9221032186891892270
+    second: twilight-dungeon_35
+  - first:
+      213: 1748341170217289986
+    second: twilight-dungeon_36
+  - first:
+      213: -6514178525119986927
+    second: twilight-dungeon_37
+  - first:
+      213: 8791433101402946505
+    second: twilight-dungeon_38
+  - first:
+      213: 8931004134178211529
+    second: twilight-dungeon_39
+  - first:
+      213: -2334823379966034492
+    second: twilight-dungeon_40
+  - first:
+      213: 8810877475031018555
+    second: twilight-dungeon_41
+  - first:
+      213: -7009355696096234350
+    second: twilight-dungeon_42
+  - first:
+      213: 4028619073374519542
+    second: twilight-dungeon_43
+  - first:
+      213: 2912732267918706535
+    second: twilight-dungeon_44
+  - first:
+      213: 341790624971946004
+    second: twilight-dungeon_45
+  - first:
+      213: -5912299245544640903
+    second: twilight-dungeon_46
+  - first:
+      213: 2701313647565811094
+    second: twilight-dungeon_47
+  - first:
+      213: -1169922875364538946
+    second: twilight-dungeon_48
+  - first:
+      213: -5133465219164861416
+    second: twilight-dungeon_49
+  - first:
+      213: 5887976715965746677
+    second: twilight-dungeon_50
+  - first:
+      213: 6481551846673618480
+    second: twilight-dungeon_51
+  - first:
+      213: -4954456863686137057
+    second: twilight-dungeon_52
+  - first:
+      213: 5452639045032158477
+    second: twilight-dungeon_53
+  - first:
+      213: 2877846266102456415
+    second: twilight-dungeon_54
+  - first:
+      213: 8975956376475193584
+    second: twilight-dungeon_55
+  - first:
+      213: -2812465866754883192
+    second: twilight-dungeon_56
+  - first:
+      213: 3915919482704816745
+    second: twilight-dungeon_57
+  - first:
+      213: -1401134737027625449
+    second: twilight-dungeon_58
+  - first:
+      213: 8737573105732837418
+    second: twilight-dungeon_59
+  - first:
+      213: -524524673365555684
+    second: twilight-dungeon_60
+  - first:
+      213: -230965717080109714
+    second: twilight-dungeon_61
+  - first:
+      213: 4847911621379591117
+    second: twilight-dungeon_62
+  - first:
+      213: 7523680872237359474
+    second: twilight-dungeon_63
+  - first:
+      213: 1515133933371859987
+    second: twilight-dungeon_64
+  - first:
+      213: -6280687092849837394
+    second: twilight-dungeon_65
+  - first:
+      213: 4074094165566573803
+    second: twilight-dungeon_66
+  - first:
+      213: -8822746609335292449
+    second: twilight-dungeon_67
+  - first:
+      213: -3596633151232358698
+    second: twilight-dungeon_68
+  - first:
+      213: -71531211607606693
+    second: twilight-dungeon_69
+  - first:
+      213: 8489746253716699319
+    second: twilight-dungeon_70
+  - first:
+      213: -4712308124583886760
+    second: twilight-dungeon_71
+  - first:
+      213: 7346436260010767808
+    second: twilight-dungeon_72
+  - first:
+      213: 4497161826474457309
+    second: twilight-dungeon_73
+  - first:
+      213: -8369914222717350391
+    second: twilight-dungeon_74
+  - first:
+      213: 1573903327091109025
+    second: twilight-dungeon_75
+  - first:
+      213: -604746493765513184
+    second: twilight-dungeon_76
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: twilight-dungeon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1056
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8483631c4e6c2c34590b8fed56570496
+      internalID: 811372112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1056
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 103efac9b27541d4c80068f0212145b1
+      internalID: 645705832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1056
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88dd4818375fde24aa6556bbf072cb5e
+      internalID: 1695571198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1056
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c040d4ea54325b54c822195920134ea2
+      internalID: 1854502391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 792
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.75835276, y: -0.09367394}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5750db3cf0019eb4fb52fdc7a9b69fe9
+      internalID: -269058273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_5
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 792
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.27182722, y: -0.09228308}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61497d9e09ab57041a335783f49bfe51
+      internalID: -1934094236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_6
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 792
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.2727344, y: 0.12971751}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc9d0d5745ea95e41a51e522d2f9d033
+      internalID: -60907829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_7
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 792
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.72793007, y: 0.12938806}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e1449aa1639cdb44bb0879ad8e99f66
+      internalID: -1364796923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 528
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0fee61a70559d3941b1f71089c7d2acc
+      internalID: -1883698092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_9
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 528
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 072913b313f12cf478e62204c9051176
+      internalID: -1935487842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_10
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 528
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 097e0e799864e2644823fb1ff6319123
+      internalID: -1689819934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_11
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 528
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0e9294a223b2794c95ff8fffdc7aeff
+      internalID: -463313368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 264
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.50063574, y: 0.01853596}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7feecdcdab9eeb4fbe073b4226d6b26
+      internalID: 1874148595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_13
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 264
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.50410235, y: 0.009150765}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 427b566eda2dcb94491b956bb7164a49
+      internalID: -480469882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_14
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 264
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.50027657, y: 0.0130280005}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efee292bce2f4d340aef10b462d0b82b
+      internalID: 281014172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_15
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 264
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.49942923, y: 0.015757358}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2b73114836aaa74a86bf302dd19a4ce
+      internalID: 1712711345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.1957336, y: 0.03544424}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cdcf625fe7c1c34daddca0c6d6c6f77
+      internalID: 801917949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_17
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 767a3e376cb97754cb8be620a878a535
+      internalID: 24485163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_18
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f6be606063e2c34d90b7665d050d78c
+      internalID: -110237020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_19
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64d42d7a062af5b43a5fc81a899b61e5
+      internalID: 1091613737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1188
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51536fa7a8f11284794f1006537f3f09
+      internalID: -482072163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_21
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1188
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98db2569b95a7e2499cee10b17729c45
+      internalID: 863955378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_22
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1188
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8d91df97b75c8242aa8873e5db327f4
+      internalID: 452924578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_23
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1188
+        width: 256
+        height: 132
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 101c1fb7145740d4d99259b8e753f7f7
+      internalID: 414425139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: twilight-dungeon_24
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 264
+        width: 256
+        height: 264
+      alignment: 9
+      pivot: {x: 0.5754223, y: 0.12102312}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6447d792e24a9245853a1a03d7898f8
+      internalID: 1602874161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2e1b118bca4c6be4fab1bb6d4b84f465
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      twilight-dungeon_0: 811372112
+      twilight-dungeon_1: 645705832
+      twilight-dungeon_10: -1689819934
+      twilight-dungeon_11: -463313368
+      twilight-dungeon_12: 1874148595
+      twilight-dungeon_13: -480469882
+      twilight-dungeon_14: 281014172
+      twilight-dungeon_15: 1712711345
+      twilight-dungeon_16: 801917949
+      twilight-dungeon_17: 24485163
+      twilight-dungeon_18: -110237020
+      twilight-dungeon_19: 1091613737
+      twilight-dungeon_2: 1695571198
+      twilight-dungeon_20: -482072163
+      twilight-dungeon_21: 863955378
+      twilight-dungeon_22: 452924578
+      twilight-dungeon_23: 414425139
+      twilight-dungeon_24: 1602874161
+      twilight-dungeon_3: 1854502391
+      twilight-dungeon_4: -269058273
+      twilight-dungeon_5: -1934094236
+      twilight-dungeon_6: -60907829
+      twilight-dungeon_7: -1364796923
+      twilight-dungeon_8: -1883698092
+      twilight-dungeon_9: -1935487842
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
