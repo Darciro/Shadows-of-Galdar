@@ -100,6 +100,7 @@ public class GameModeManager : MonoBehaviour
         // Initialize and start the TurnManager
         if (TurnManager.Instance != null)
         {
+            UIManager.Instance.ShowTurnPhase("Combat mode");
             TurnManager.Instance.StartCombat(participants);
         }
         else
