@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 821180580925847953}
   - component: {fileID: 5879139122448742026}
   - component: {fileID: 6843892866340417772}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Level 0 - Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3038,11 +3038,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.255
+      value: 0.999
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.323
+      value: 0.082
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.z

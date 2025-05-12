@@ -92,8 +92,6 @@ public class AddDungeonBoundary : DungeonGeneratorPostProcessingGrid2D
             if (layer >= 0) go.layer = layer;
             else Debug.LogWarning($"[AddDungeonBoundary] Layer '{boundaryLayerName}' not found.");
         }
-
-        Debug.Log("[AddDungeonBoundary] Outer boundary collider created.");
     }
 
     private List<List<Vector2>> BuildEdgeLoops(List<(Vector2 a, Vector2 b)> edges, float eps)

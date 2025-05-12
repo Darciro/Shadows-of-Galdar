@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 7683610462223226110}
   - component: {fileID: 821180580925847953}
   - component: {fileID: 5879139122448742026}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Level 0 - Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1764,8 +1764,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1194093415
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0.015625, z: 0}
