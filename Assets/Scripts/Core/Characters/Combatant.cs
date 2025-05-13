@@ -220,7 +220,7 @@ public class Combatant : MonoBehaviour
                 QueueAction(() =>
                 {
                     Debug.Log($"[Combatant ActionQueue - Attack] {characterName} attacking {target.characterName} for {attackDamage} damage. Cost: {baseAttackAPCost} AP.");
-                    // TODO: Add visual effect/animation for attack
+                    UIManager.Instance.ShowDamagePopup(target.transform.position, attackDamage);
                     target.TakeDamage(attackDamage);
                     return true; // Action complete
                 });

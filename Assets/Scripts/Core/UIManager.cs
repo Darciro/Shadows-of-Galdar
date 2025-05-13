@@ -124,7 +124,7 @@ public class UIManager : MonoBehaviour
         GameObject popup = Instantiate(damagePopupPrefab, canvasRoot);
         popup.GetComponent<RectTransform>().position = screenPos;
 
-        // popup.GetComponent<DamagePopup>().Setup(damage);
+        popup.GetComponent<DamagePopup>().Setup(damage);
     }
 
     private IEnumerator ShowPhaseRoutine(string message)
@@ -137,20 +137,20 @@ public class UIManager : MonoBehaviour
         turnsPhaseText.gameObject.SetActive(false);
     }
 
-    /* public void ShowEnemyTooltip(CharacterManager enemy, Vector3 worldPosition)
+    public void ShowEnemyTooltip(Combatant enemy, Vector3 worldPosition)
     {
         if (enemy == null) return;
 
         enemyNameText.text = enemy.name;
-        enemyHpText.text = $"HP: {enemy.Stats.CurrentHP} / {enemy.Stats.MaxHP}";
-        enemyDamageText.text = $"DMG: {enemy.Attributes.Strength}";
+        enemyHpText.text = $"HP: {enemy.currentHealth} / {enemy.maxHealth}";
+        enemyDamageText.text = $"DMG: {enemy.attackDamage}";
 
         Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
         screenPos += new Vector2(75, -75);
         enemyTooltip.transform.position = screenPos;
 
         enemyTooltip.SetActive(true);
-    } */
+    }
 
     public void HideEnemyTooltip()
     {

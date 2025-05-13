@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -4319078435728184646}
   - component: {fileID: 3477854766238720961}
   - component: {fileID: -7974998276777574342}
+  - component: {fileID: 494620171044751988}
   m_Layer: 8
   m_Name: MaskedOrc
   m_TagString: Enemy
@@ -258,8 +259,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   localForward: {x: 0, y: 1, z: 0}
-  pursuitMemory: 3
-  debugLogs: 0
+  pursuitMemoryExploration: 3
+  enableDebugLogs: 0
   drawGizmos: 1
 --- !u!114 &-7974998276777574342
 MonoBehaviour:
@@ -271,5 +272,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Character
+  maxHealth: 100
+  currentHealth: 0
+  maxActionPoints: 10
+  currentActionPoints: 0
+  initiative: 10
+  apCostPerPathNode: 1
+  moveSpeedInCombat: 3
+  baseAttackAPCost: 2
+  attackDamage: 10
+  attackRange: 1.5
+  enableDebugLogging: 0
+--- !u!114 &494620171044751988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6963218544976182214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3799109032da74141b31a7da9c4c83e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
