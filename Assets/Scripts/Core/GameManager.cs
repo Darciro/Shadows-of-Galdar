@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     // List of all potential combatants in the scene
     // Consider making this dynamic if enemies spawn/despawn frequently during exploration.
-    private List<Combatant> allCombatantsInScene = new List<Combatant>();
+    private List<Character> allCombatantsInScene = new List<Character>();
 
 
     void Awake()
@@ -59,22 +59,22 @@ public class GameManager : MonoBehaviour
 
     public void RefreshCombatantList()
     {
-        allCombatantsInScene = FindObjectsOfType<Combatant>().ToList();
+        allCombatantsInScene = FindObjectsOfType<Character>().ToList();
         Debug.Log($"[GameManager] Refreshed combatant list. Found: {allCombatantsInScene.Count} combatants.");
     }
 
-    public List<Combatant> GetAllCombatants()
+    public List<Character> GetAllCombatants()
     {
         // Ensure list is up-to-date, removing any destroyed combatants
         allCombatantsInScene.RemoveAll(item => item == null);
-        return new List<Combatant>(allCombatantsInScene); // Return a copy
+        return new List<Character>(allCombatantsInScene); // Return a copy
     }
 
     /// <summary>
     /// Initiates combat with a specific group of participants.
     /// </summary>
     /// <param name="participants">The combatants involved in this specific combat encounter.</param>
-    public void StartCombat(List<Combatant> participants)
+    public void StartCombat(List<Character> participants)
     {
         if (currentMode == GameMode.Combat)
         {
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         ChangeMode(GameMode.Combat);
 
         // Notify all combatants that combat has started
-        foreach (Combatant combatant in allCombatantsInScene) // Notify all, not just participants
+        foreach (Character combatant in allCombatantsInScene) // Notify all, not just participants
         {
             if (combatant != null) combatant.OnCombatStart();
         }
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
         ChangeMode(GameMode.Exploration);
 
         // Notify all combatants that combat has ended
-        foreach (Combatant combatant in allCombatantsInScene)
+        foreach (Character combatant in allCombatantsInScene)
         {
             if (combatant != null) combatant.OnCombatEnd();
         }
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Example trigger: Call this from player attack script or enemy detection script
-    public void RequestCombatStart(Combatant initiator, Combatant target)
+    public void RequestCombatStart(Character initiator, Character target)
     {
         if (currentMode == GameMode.Combat) return;
 
@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
 
         // For now, let's assume combat involves the initiator, the target,
         // and any other nearby enemies or allies. This logic can be expanded.
-        List<Combatant> participants = new List<Combatant>();
+        List<Character> participants = new List<Character>();
         if (initiator != null) participants.Add(initiator);
         if (target != null && !participants.Contains(target)) participants.Add(target);
 

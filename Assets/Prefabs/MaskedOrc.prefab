@@ -274,12 +274,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: Character
-  maxHealth: 100
-  currentHealth: 0
-  maxActionPoints: 10
-  currentActionPoints: 0
-  initiative: 10
+  Strength: 10
+  Dexterity: 10
+  Constitution: 10
+  Intelligence: 10
+  Perception: 10
+  Charisma: 10
+  MaxHealth: 100
+  CurrentHealth: 100
+  MaxActionPoints: 2
+  CurrentActionPoints: 0
+  MaxHunger: 100
+  Hunger: 100
+  MaxThirst: 100
+  Thirst: 100
+  characterName: Orc Mascarado
   apCostPerPathNode: 1
   moveSpeedInCombat: 3
   baseAttackAPCost: 2

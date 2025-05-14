@@ -3,15 +3,17 @@ using Pathfinding; // For IAstarAI and Seeker
 using System.Collections.Generic;
 using System.Collections; // For IEnumerator
 
-public class Combatant : MonoBehaviour
+public class Character : CharacterStats
 {
-    [Header("Stats")]
+    [Header("Character Status")]
     public string characterName = "Character";
-    public int maxHealth = 100;
-    public int currentHealth;
-    public int maxActionPoints = 10;
-    public int currentActionPoints;
-    public int initiative = 10;
+    // [Space] public CharacterStats Stats = new CharacterStats();
+
+    /* public int MaxHealth = 100;
+    public int CurrentHealth;
+    public int MaxActionPoints = 10;
+    public int CurrentActionPoints;
+    public int Initiative = 10; */
 
     [Header("Movement")]
     [Tooltip("AP cost per node/segment in the A* path.")]
@@ -30,12 +32,9 @@ public class Combatant : MonoBehaviour
 
     public bool IsPlayerControlled { get; set; } = false;
     public bool IsMyTurn { get; set; } = false;
-
     private IAstarAI aiAgent;
     private Seeker seeker;
-    private EnemyAIController enemyAIController; // Link to enemy AI logic
-    // private CharacterPathfindingController playerController; // Link to player input logic (optional here)
-
+    private EnemyAIController enemyAIController;
     public delegate bool CombatAction();
     private Queue<CombatAction> actionQueue = new Queue<CombatAction>();
     private bool isPerformingAction = false;
@@ -43,17 +42,17 @@ public class Combatant : MonoBehaviour
 
     public int ActionQueueCount => actionQueue.Count;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         aiAgent = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
-        enemyAIController = GetComponent<EnemyAIController>(); // Get if this is an enemy
-        // playerController = GetComponent<CharacterPathfindingController>(); // Get if this is the player
+        enemyAIController = GetComponent<EnemyAIController>();
 
-        if (aiAgent == null) Debug.LogError($"[Combatant] {gameObject.name} is missing an IAstarAI component!", this);
-        if (seeker == null) Debug.LogError($"[Combatant] {gameObject.name} is missing a Seeker component!", this);
+        if (aiAgent == null) Debug.LogError($"[Character] {gameObject.name} is missing an IAstarAI component!", this);
+        if (seeker == null) Debug.LogError($"[Character] {gameObject.name} is missing a Seeker component!", this);
 
-        currentHealth = maxHealth;
+        // CurrentHealth = MaxHealth;
     }
 
     void Start()
@@ -68,7 +67,7 @@ public class Combatant : MonoBehaviour
 
     public void OnCombatStart()
     {
-        Debug.Log($"[Combatant] {characterName} ({gameObject.name}) entering combat mode.");
+        Debug.Log($"[Character] {characterName} ({gameObject.name}) entering combat mode.");
         actionQueue.Clear();
         isPerformingAction = false;
         if (aiAgent != null)
@@ -81,7 +80,7 @@ public class Combatant : MonoBehaviour
 
     public void OnCombatEnd()
     {
-        Debug.Log($"[Combatant] {characterName} ({gameObject.name}) exiting combat mode.");
+        Debug.Log($"[Character] {characterName} ({gameObject.name}) exiting combat mode.");
         IsMyTurn = false;
         actionQueue.Clear();
         isPerformingAction = false;
@@ -102,9 +101,9 @@ public class Combatant : MonoBehaviour
 
     public void StartTurn()
     {
-        Debug.Log($"[Combatant] {characterName}'s turn (Instance ID: {this.GetInstanceID()}). AP: {maxActionPoints}");
+        Debug.Log($"[Character] {characterName}'s turn (Instance ID: {this.GetInstanceID()}). AP: {MaxActionPoints}");
         IsMyTurn = true;
-        currentActionPoints = maxActionPoints;
+        CurrentActionPoints = MaxActionPoints;
         actionQueue.Clear();
         isPerformingAction = false;
 
@@ -121,14 +120,14 @@ public class Combatant : MonoBehaviour
         else if (IsPlayerControlled)
         {
             // Player's turn: UI should enable, input script listens for commands
-            Debug.Log($"[Combatant] {characterName} (Player) turn started. Waiting for input.");
+            Debug.Log($"[Character] {characterName} (Player) turn started. Waiting for input.");
         }
     }
 
     public void EndTurn()
     {
         if (!IsMyTurn) return;
-        Debug.Log($"[Combatant] {characterName} ending turn. AP Left: {currentActionPoints}");
+        Debug.Log($"[Character] {characterName} ending turn. AP Left: {CurrentActionPoints}");
         IsMyTurn = false;
         if (aiAgent != null)
         {
@@ -160,7 +159,7 @@ public class Combatant : MonoBehaviour
 
         if (p.error)
         {
-            Debug.LogError($"[Combatant] {characterName} path error to {targetPosition}: {p.errorLog}");
+            Debug.LogError($"[Character] {characterName} path error to {targetPosition}: {p.errorLog}");
             return;
         }
 
@@ -173,9 +172,9 @@ public class Combatant : MonoBehaviour
         }
 
 
-        if (currentActionPoints >= apCost)
+        if (CurrentActionPoints >= apCost)
         {
-            Debug.Log($"[Combatant] {characterName} moving to {targetPosition}. Path Nodes: {p.path.Count}, Cost: {apCost} AP. Remaining AP: {currentActionPoints - apCost}");
+            Debug.Log($"[Character] {characterName} moving to {targetPosition}. Path Nodes: {p.path.Count}, Cost: {apCost} AP. Remaining AP: {CurrentActionPoints - apCost}");
 
             QueueAction(() =>
             {
@@ -185,12 +184,12 @@ public class Combatant : MonoBehaviour
                     aiAgent.isStopped = false;
                     aiAgent.canMove = true;
                     aiAgent.SetPath(currentPathForAP); // Use the path we got for AP calculation
-                    Debug.Log($"[Combatant ActionQueue - Move] {characterName} starting A* movement. HasPath: {aiAgent.hasPath}");
+                    Debug.Log($"[Character ActionQueue - Move] {characterName} starting A* movement. HasPath: {aiAgent.hasPath}");
                 }
 
                 if (aiAgent.reachedDestination || !aiAgent.hasPath)
                 {
-                    Debug.Log($"[Combatant ActionQueue - Move] {characterName} finished move action. Reached: {aiAgent.reachedDestination}, HasPath: {aiAgent.hasPath}");
+                    Debug.Log($"[Character ActionQueue - Move] {characterName} finished move action. Reached: {aiAgent.reachedDestination}, HasPath: {aiAgent.hasPath}");
                     aiAgent.isStopped = true;
                     aiAgent.canMove = false;
                     currentPathForAP = null; // Clear stored path
@@ -203,23 +202,23 @@ public class Combatant : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[Combatant] {characterName} cannot move to {targetPosition}. Not enough AP. Need: {apCost}, Have: {currentActionPoints}");
+            Debug.LogWarning($"[Character] {characterName} cannot move to {targetPosition}. Not enough AP. Need: {apCost}, Have: {CurrentActionPoints}");
             currentPathForAP = null;
         }
     }
 
 
-    public bool TryAttack(Combatant target)
+    public bool TryAttack(Character target)
     {
         if (!IsMyTurn || isPerformingAction || target == null) return false;
 
-        if (currentActionPoints >= baseAttackAPCost)
+        if (CurrentActionPoints >= baseAttackAPCost)
         {
             if (Vector3.Distance(transform.position, target.transform.position) <= attackRange)
             {
                 QueueAction(() =>
                 {
-                    Debug.Log($"[Combatant ActionQueue - Attack] {characterName} attacking {target.characterName} for {attackDamage} damage. Cost: {baseAttackAPCost} AP.");
+                    Debug.Log($"[Character ActionQueue - Attack] {characterName} attacking {target.characterName} for {attackDamage} damage. Cost: {baseAttackAPCost} AP.");
                     UIManager.Instance.ShowDamagePopup(target.transform.position, attackDamage);
                     target.TakeDamage(attackDamage);
                     return true; // Action complete
@@ -229,28 +228,28 @@ public class Combatant : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[Combatant] {characterName} cannot attack {target.characterName}. Target out of range.");
+                Debug.LogWarning($"[Character] {characterName} cannot attack {target.characterName}. Target out of range.");
                 return false;
             }
         }
-        Debug.LogWarning($"[Combatant] {characterName} cannot attack. Not enough AP. Need: {baseAttackAPCost}, Have: {currentActionPoints}");
+        Debug.LogWarning($"[Character] {characterName} cannot attack. Not enough AP. Need: {baseAttackAPCost}, Have: {CurrentActionPoints}");
         return false;
     }
 
     public void TakeDamage(int amount)
     {
-        currentHealth -= amount;
-        Debug.Log($"[Combatant] {characterName} took {amount} damage. Health: {currentHealth}/{maxHealth}");
-        if (currentHealth <= 0)
+        CurrentHealth -= amount;
+        Debug.Log($"[Character] {characterName} took {amount} damage. Health: {CurrentHealth}/{MaxHealth}");
+        if (CurrentHealth <= 0)
         {
-            currentHealth = 0;
+            CurrentHealth = 0;
             Die();
         }
     }
 
     private void Die()
     {
-        Debug.Log($"[Combatant] {characterName} has died.");
+        Debug.Log($"[Character] {characterName} has died.");
         gameObject.SetActive(false);
         if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Combat)
         {
@@ -260,16 +259,16 @@ public class Combatant : MonoBehaviour
 
     public void SpendAP(int amount)
     {
-        currentActionPoints -= amount;
-        if (currentActionPoints < 0) currentActionPoints = 0;
-        Debug.Log($"[Combatant] {characterName} spent {amount} AP. AP Remaining: {currentActionPoints}");
+        CurrentActionPoints -= amount;
+        if (CurrentActionPoints < 0) CurrentActionPoints = 0;
+        Debug.Log($"[Character] {characterName} spent {amount} AP. AP Remaining: {CurrentActionPoints}");
     }
 
     public void QueueAction(CombatAction action)
     {
         if (!IsMyTurn)
         {
-            Debug.LogWarning($"[Combatant] {characterName} tried to queue action but it's not their turn.");
+            Debug.LogWarning($"[Character] {characterName} tried to queue action but it's not their turn.");
             return;
         }
         actionQueue.Enqueue(action);
@@ -294,7 +293,7 @@ public class Combatant : MonoBehaviour
 
     private IEnumerator ExecuteAction(CombatAction action)
     {
-        if (enableDebugLogging) Debug.Log($"[Combatant] {characterName} starting to execute action from queue.");
+        if (enableDebugLogging) Debug.Log($"[Character] {characterName} starting to execute action from queue.");
         bool actionCompleted = false;
 
         // Ensure AI can move if the action might involve it (like TryMoveTo's queued action)
@@ -304,7 +303,7 @@ public class Combatant : MonoBehaviour
         {
             if (!IsMyTurn) // Safety check if turn ended prematurely
             {
-                Debug.LogWarning($"[Combatant] {characterName}'s turn ended while action was executing.");
+                Debug.LogWarning($"[Character] {characterName}'s turn ended while action was executing.");
                 isPerformingAction = false;
                 yield break;
             }
@@ -319,16 +318,16 @@ public class Combatant : MonoBehaviour
 
         actionQueue.Dequeue();
         isPerformingAction = false;
-        if (enableDebugLogging) Debug.Log($"[Combatant] {characterName} finished executing action. Actions in queue: {actionQueue.Count}");
+        if (enableDebugLogging) Debug.Log($"[Character] {characterName} finished executing action. Actions in queue: {actionQueue.Count}");
 
 
-        if (actionQueue.Count > 0 && currentActionPoints > 0 && IsMyTurn)
+        if (actionQueue.Count > 0 && CurrentActionPoints > 0 && IsMyTurn)
         {
             ProcessActionQueue();
         }
         else if (IsMyTurn) // No more actions or no AP
         {
-            if (enableDebugLogging) Debug.Log($"[Combatant] {characterName} has no more actions or AP. IsPlayer: {IsPlayerControlled}");
+            if (enableDebugLogging) Debug.Log($"[Character] {characterName} has no more actions or AP. IsPlayer: {IsPlayerControlled}");
             if (!IsPlayerControlled) // AI automatically ends turn if out of actions/AP
             {
                 EndTurn();

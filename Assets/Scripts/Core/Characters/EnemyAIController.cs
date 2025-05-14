@@ -6,7 +6,7 @@ using System.Collections.Generic; // For List
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(IAstarAI))]
 [RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(Combatant))] // Ensure Combatant component is present
+[RequireComponent(typeof(Character))] // Ensure Character component is present
 public class EnemyAIController : MonoBehaviour
 {
     public enum AIState
@@ -25,7 +25,7 @@ public class EnemyAIController : MonoBehaviour
     [Header("Pathfinding")]
     private IAstarAI aiAgent;
     private Seeker seeker;
-    private Combatant combatant;
+    private Character combatant;
 
     [Header("Exploration Patrol")]
     public float patrolRadius = 10f;
@@ -50,11 +50,11 @@ public class EnemyAIController : MonoBehaviour
     {
         aiAgent = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
-        combatant = GetComponent<Combatant>();
+        combatant = GetComponent<Character>();
 
         if (aiAgent == null || seeker == null || combatant == null)
         {
-            Debug.LogError($"[EnemyAIController] Missing Seeker, IAstarAI, or Combatant on {name}. Disabling.", this);
+            Debug.LogError($"[EnemyAIController] Missing Seeker, IAstarAI, or Character on {name}. Disabling.", this);
             enabled = false;
         }
     }
@@ -100,7 +100,7 @@ public class EnemyAIController : MonoBehaviour
         {
             if (combatant.IsMyTurn && enableDebugLogs && Time.frameCount % 60 == 0)
             {
-                Debug.Log($"[EnemyAIController] {name} in Combat Mode. IsMyTurn: {combatant.IsMyTurn}. AP: {combatant.currentActionPoints}");
+                Debug.Log($"[EnemyAIController] {name} in Combat Mode. IsMyTurn: {combatant.IsMyTurn}. AP: {combatant.CurrentActionPoints}");
             }
         }
     }
@@ -121,12 +121,12 @@ public class EnemyAIController : MonoBehaviour
             // Attempt to initiate combat if close enough after detecting
             if (Vector3.Distance(transform.position, playerTransform.position) < viewRadius * 0.5f) // Example engagement distance
             {
-                Combatant playerCombatant = playerTransform.GetComponent<Combatant>();
+                Character playerCombatant = playerTransform.GetComponent<Character>();
                 if (playerCombatant != null)
                 {
                     GameManager.Instance.RequestCombatStart(combatant, playerCombatant);
                     // RequestCombatStart will change the game mode, which should then
-                    // cause this enemy's Combatant.OnCombatStart() to be called,
+                    // cause this enemy's Character.OnCombatStart() to be called,
                     // and then its turn will eventually come via TurnManager.
                 }
             }
@@ -213,7 +213,7 @@ public class EnemyAIController : MonoBehaviour
 
     public void PlanCombatTurn()
     {
-        if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} (Combatant: {combatant.characterName}) planning combat turn. AP: {combatant.currentActionPoints}");
+        if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} (Character: {combatant.characterName}) planning combat turn. AP: {combatant.CurrentActionPoints}");
         if (playerTransform == null)
         {
             combatant.EndTurn();
@@ -221,9 +221,9 @@ public class EnemyAIController : MonoBehaviour
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
-        Combatant playerCombatant = playerTransform.GetComponent<Combatant>();
+        Character playerCombatant = playerTransform.GetComponent<Character>();
 
-        if (playerCombatant == null || playerCombatant.currentHealth <= 0)
+        if (playerCombatant == null || playerCombatant.CurrentHealth <= 0)
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name}: Player target is null or dead. Ending turn.");
             combatant.EndTurn();
@@ -231,33 +231,33 @@ public class EnemyAIController : MonoBehaviour
         }
 
         // 1. Try to Attack if in range and enough AP
-        if (distanceToPlayer <= combatant.attackRange && combatant.currentActionPoints >= combatant.baseAttackAPCost)
+        if (distanceToPlayer <= combatant.attackRange && combatant.CurrentActionPoints >= combatant.baseAttackAPCost)
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} attempting to attack player.");
             combatant.TryAttack(playerCombatant);
-            // TryAttack queues the action. Combatant processes its queue.
+            // TryAttack queues the action. Character processes its queue.
             // If AI has more AP and wants to do more, it needs to wait for this action to complete
             // or queue more actions. For simplicity, one main "intent" (attack or move) per PlanCombatTurn call.
-            // The Combatant's action queue will call EndTurn if it's empty and it's AI.
+            // The Character's action queue will call EndTurn if it's empty and it's AI.
             return;
         }
 
         // 2. Try to Move into Attack Range if not already there and enough AP for a move
         // A more complex AI would calculate if it has AP for BOTH move and attack.
         int apForShortMove = combatant.apCostPerPathNode * 2; // Example: cost for moving a couple of nodes
-        if (distanceToPlayer > combatant.attackRange && combatant.currentActionPoints >= apForShortMove)
+        if (distanceToPlayer > combatant.attackRange && combatant.CurrentActionPoints >= apForShortMove)
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} player out of range, attempting to move closer.");
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
             Vector3 targetMovePos = playerTransform.position - directionToPlayer * (combatant.attackRange * 0.8f);
 
             combatant.RequestMoveTo(targetMovePos);
-            // Similar to attack, this queues the move. Combatant handles execution.
+            // Similar to attack, this queues the move. Character handles execution.
             return;
         }
 
         // 3. If no action was queued (e.g., not enough AP, or already in range but couldn't attack), end turn.
-        // The Combatant's ProcessActionQueue will call EndTurn if it's an AI and the queue is empty.
+        // The Character's ProcessActionQueue will call EndTurn if it's an AI and the queue is empty.
         if (combatant.ActionQueueCount == 0) // Accessing the new public property
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} has no suitable actions queued or AP. Ending turn.");

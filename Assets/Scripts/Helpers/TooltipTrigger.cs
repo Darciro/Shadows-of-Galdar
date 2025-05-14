@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class TooltipTrigger : MonoBehaviour
 {
-    private Combatant character;
+    private Character character;
 
     private void Awake()
     {
-        character = GetComponent<Combatant>();
+        character = GetComponent<Character>();
     }
 
     private void OnMouseEnter()

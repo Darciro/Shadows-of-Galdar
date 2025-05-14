@@ -3,23 +3,23 @@ using Pathfinding;
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(IAstarAI))]
-[RequireComponent(typeof(Combatant))] // Ensure Combatant component is present
+[RequireComponent(typeof(Character))] // Ensure Character component is present
 public class CharacterPathfindingController : MonoBehaviour
 {
     private IAstarAI aiAgent;
     private Camera mainCamera;
-    private Combatant combatant; // Reference to the Combatant component
+    private Character combatant; // Reference to the Character component
 
     [Tooltip("The Z-coordinate of the plane on which pathfinding should occur (e.g., ground plane).")]
     public float pathfindingPlaneZ = 0f;
 
     // Example: For selecting an enemy to attack
-    public Combatant selectedTargetEnemy = null;
+    public Character selectedTargetEnemy = null;
 
     void Awake()
     {
         aiAgent = GetComponent<IAstarAI>();
-        combatant = GetComponent<Combatant>(); // Get the Combatant component
+        combatant = GetComponent<Character>(); // Get the Character component
 
         if (aiAgent == null)
         {
@@ -29,7 +29,7 @@ public class CharacterPathfindingController : MonoBehaviour
         }
         if (combatant == null)
         {
-            Debug.LogError("[CharacterPathfindingController] No Combatant component found!", this);
+            Debug.LogError("[CharacterPathfindingController] No Character component found!", this);
             enabled = false;
             return;
         }
@@ -71,7 +71,7 @@ public class CharacterPathfindingController : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider != null)
             {
-                Combatant enemyCombatant = hit.collider.GetComponent<Combatant>();
+                Character enemyCombatant = hit.collider.GetComponent<Character>();
                 if (enemyCombatant != null && !enemyCombatant.IsPlayerControlled)
                 {
                     Debug.Log($"[CharacterPathfindingController] Clicked on enemy {enemyCombatant.characterName} in exploration. Requesting combat.");
@@ -88,21 +88,21 @@ public class CharacterPathfindingController : MonoBehaviour
     {
         if (!combatant.IsMyTurn)
         {
-            // It's not our turn, AIPath should be stopped by Combatant script
+            // It's not our turn, AIPath should be stopped by Character script
             if (aiAgent.canMove) aiAgent.canMove = false;
             if (!aiAgent.isStopped) aiAgent.isStopped = true;
             return;
         }
 
         // It IS our turn
-        Debug.Log($"[CharacterPathfindingController] Player's turn. AP: {combatant.currentActionPoints}. Waiting for input.");
+        Debug.Log($"[CharacterPathfindingController] Player's turn. AP: {combatant.CurrentActionPoints}. Waiting for input.");
 
         if (Input.GetMouseButtonDown(0)) // Left click for actions
         {
             RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider != null)
             {
-                Combatant targetEnemy = hit.collider.GetComponent<Combatant>();
+                Character targetEnemy = hit.collider.GetComponent<Character>();
                 if (targetEnemy != null && !targetEnemy.IsPlayerControlled)
                 {
                     Debug.Log($"[CharacterPathfindingController] Player clicked on enemy {targetEnemy.characterName} during combat turn.");

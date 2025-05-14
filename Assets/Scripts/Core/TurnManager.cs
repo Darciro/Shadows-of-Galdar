@@ -6,11 +6,11 @@ public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
 
-    private List<Combatant> combatants = new List<Combatant>();
+    private List<Character> combatants = new List<Character>();
     private int currentCombatantIndex = -1;
-    public Combatant CurrentCombatant => (currentCombatantIndex >= 0 && currentCombatantIndex < combatants.Count && combatants[currentCombatantIndex] != null) ? combatants[currentCombatantIndex] : null;
+    public Character CurrentCombatant => (currentCombatantIndex >= 0 && currentCombatantIndex < combatants.Count && combatants[currentCombatantIndex] != null) ? combatants[currentCombatantIndex] : null;
 
-    public delegate void TurnChangedHandler(Combatant newCurrentCombatant);
+    public delegate void TurnChangedHandler(Character newCurrentCombatant);
     public event TurnChangedHandler OnTurnChanged;
 
     private bool isCombatActive = false;
@@ -25,7 +25,7 @@ public class TurnManager : MonoBehaviour
         Instance = this;
     }
 
-    public void StartCombat(List<Combatant> initialParticipants)
+    public void StartCombat(List<Character> initialParticipants)
     {
         if (isCombatActive)
         {
@@ -35,8 +35,8 @@ public class TurnManager : MonoBehaviour
 
         Debug.Log("[TurnManager] Starting new combat sequence.");
         combatants = initialParticipants
-            .Where(c => c != null && c.gameObject.activeInHierarchy && c.currentHealth > 0)
-            .OrderByDescending(c => c.initiative)
+            .Where(c => c != null && c.gameObject.activeInHierarchy && c.CurrentHealth > 0)
+            .OrderByDescending(c => c.Initiative)
             .ToList();
 
         if (!combatants.Any())
@@ -85,7 +85,7 @@ public class TurnManager : MonoBehaviour
         }
 
         // Skip dead or inactive combatants
-        while (combatants[currentCombatantIndex] == null || !combatants[currentCombatantIndex].gameObject.activeInHierarchy || combatants[currentCombatantIndex].currentHealth <= 0)
+        while (combatants[currentCombatantIndex] == null || !combatants[currentCombatantIndex].gameObject.activeInHierarchy || combatants[currentCombatantIndex].CurrentHealth <= 0)
         {
             Debug.Log($"[TurnManager] Skipping dead/inactive combatant: {combatants[currentCombatantIndex]?.characterName ?? "NULL_OR_DESTROYED"}. Removing from turn order.");
             combatants.RemoveAt(currentCombatantIndex);
@@ -133,7 +133,7 @@ public class TurnManager : MonoBehaviour
         NextTurn();
     }
 
-    public void RemoveCombatant(Combatant combatantToRemove)
+    public void RemoveCombatant(Character combatantToRemove)
     {
         if (!isCombatActive || combatantToRemove == null) return;
 
@@ -142,7 +142,7 @@ public class TurnManager : MonoBehaviour
 
         if (combatants.Remove(combatantToRemove))
         {
-            Debug.Log($"[TurnManager] Combatant {combatantToRemove.characterName} removed from turn order (e.g. died).");
+            Debug.Log($"[TurnManager] Character {combatantToRemove.characterName} removed from turn order (e.g. died).");
             if (wasCurrentTurn)
             {
                 currentCombatantIndex--;
@@ -159,7 +159,7 @@ public class TurnManager : MonoBehaviour
     private bool CheckCombatEndCondition()
     {
         // Ensure we only work with active, non-null combatants for faction check
-        var aliveCombatants = combatants.Where(c => c != null && c.gameObject.activeInHierarchy && c.currentHealth > 0).ToList();
+        var aliveCombatants = combatants.Where(c => c != null && c.gameObject.activeInHierarchy && c.CurrentHealth > 0).ToList();
 
         if (!aliveCombatants.Any())
         {

@@ -10567,12 +10567,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Strength: 10
+  Dexterity: 10
+  Constitution: 10
+  Intelligence: 10
+  Perception: 10
+  Charisma: 10
+  MaxHealth: 100
+  CurrentHealth: 0
+  MaxActionPoints: 10
+  CurrentActionPoints: 0
+  MaxHunger: 100
+  Hunger: 100
+  MaxThirst: 100
+  Thirst: 100
   characterName: Character
-  maxHealth: 100
-  currentHealth: 0
-  maxActionPoints: 10
-  currentActionPoints: 0
-  initiative: 10
   apCostPerPathNode: 1
   moveSpeedInCombat: 3
   baseAttackAPCost: 2
@@ -19669,12 +19678,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Strength: 7
+  Dexterity: 8
+  Constitution: 6
+  Intelligence: 4
+  Perception: 12
+  Charisma: 3
+  MaxHealth: 100
+  CurrentHealth: 0
+  MaxActionPoints: 10
+  CurrentActionPoints: 0
+  MaxHunger: 100
+  Hunger: 100
+  MaxThirst: 100
+  Thirst: 100
   characterName: Character
-  maxHealth: 100
-  currentHealth: 0
-  maxActionPoints: 10
-  currentActionPoints: 0
-  initiative: 10
   apCostPerPathNode: 1
   moveSpeedInCombat: 3
   baseAttackAPCost: 2
@@ -23704,12 +23722,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Strength: 15
+  Dexterity: 12
+  Constitution: 13
+  Intelligence: 9
+  Perception: 12
+  Charisma: 14
+  MaxHealth: 100
+  CurrentHealth: 0
+  MaxActionPoints: 10
+  CurrentActionPoints: 0
+  MaxHunger: 100
+  Hunger: 100
+  MaxThirst: 100
+  Thirst: 100
   characterName: Character
-  maxHealth: 100
-  currentHealth: 0
-  maxActionPoints: 10
-  currentActionPoints: 0
-  initiative: 10
   apCostPerPathNode: 1
   moveSpeedInCombat: 3
   baseAttackAPCost: 2

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class CharacterStats
+public class CharacterStats : MonoBehaviour
 {
     [Header("Attributes")]
     public int Strength = 10;
@@ -11,15 +11,14 @@ public class CharacterStats
     public int Perception = 10;
     public int Charisma = 10;
 
-    public int Initiative { get; private set; }
-
+    [Header("Vitals")]
     // HP = Constitution * 5
-    public int MaximumHP = 100;
-    public int CurrentHP = 100;
+    public int MaxHealth;
+    public int CurrentHealth;
 
     // AP = 3 + Dexterity / 10
-    public int MaxAP = 5;
-    public int CurrentAP = 5;
+    public int MaxActionPoints = 5;
+    public int CurrentActionPoints = 5;
 
     // 0 = starving, 100 = full
     public int MaxHunger = 100;
@@ -30,31 +29,29 @@ public class CharacterStats
     public int Thirst = 100;
 
     // Initiative = Dexterity + 1d10
+    public int Initiative { get; private set; }
 
-    public CharacterStats()
+    protected virtual void Awake()
     {
-        MaximumHP = 100;
-        CurrentHP = 100;
-        MaxAP = 2;
-        CurrentAP = 0;
-
+        MaxHealth = Constitution * 5;
+        CurrentHealth = MaxHealth;
         Hunger = MaxHunger;
         Thirst = MaxThirst;
     }
 
     /* public void SetCharacterStats()
     {
-        MaximumHP = Constitution * 5;
-        CurrentHP = MaximumHP;
+        MaxHealth = Constitution * 5;
+        CurrentHealth = MaxHealth;
     } */
 
     /* public void CalculateStatsFromAttributes(CharacterAttributes attributes)
     {
-        MaximumHP = attributes.Constitution * 5;
-        CurrentHP = MaximumHP;
+        MaxHealth = attributes.Constitution * 5;
+        CurrentHealth = MaxHealth;
 
-        MaxAP = 3 + (attributes.Dexterity / 10);
-        CurrentAP = MaxAP;
+        MaxActionPoints = 3 + (attributes.Dexterity / 10);
+        CurrentActionPoints = MaxActionPoints;
 
         // Initiative is calculated later at the start of combat
         Initiative = 0;
@@ -67,6 +64,6 @@ public class CharacterStats
 
     public void RestoreAP()
     {
-        CurrentAP = MaxAP;
+        CurrentActionPoints = MaxActionPoints;
     }
 }

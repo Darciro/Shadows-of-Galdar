@@ -137,12 +137,12 @@ public class UIManager : MonoBehaviour
         turnsPhaseText.gameObject.SetActive(false);
     }
 
-    public void ShowEnemyTooltip(Combatant enemy, Vector3 worldPosition)
+    public void ShowEnemyTooltip(Character enemy, Vector3 worldPosition)
     {
         if (enemy == null) return;
 
         enemyNameText.text = enemy.name;
-        enemyHpText.text = $"HP: {enemy.currentHealth} / {enemy.maxHealth}";
+        enemyHpText.text = $"HP: {enemy.CurrentHealth} / {enemy.MaxHealth}";
         enemyDamageText.text = $"DMG: {enemy.attackDamage}";
 
         Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
