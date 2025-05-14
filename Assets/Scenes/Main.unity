@@ -14962,6 +14962,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35bbf57c0da5fed47b0a985a10b28cd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dungeonMasterBook: {fileID: 1379262645}
+  gameplayRoot: {fileID: 969382722}
   currentMode: 0
 --- !u!114 &729240499
 MonoBehaviour:
@@ -17160,8 +17162,6 @@ CompositeCollider2D:
         Y: -107500000
       - X: 325468736
         Y: -107500000
-  - m_Collider: {fileID: 854103468}
-    m_ColliderPaths: []
   m_CompositePaths:
     m_Paths:
     - - {x: -0.9765693, y: 5.1757812}
@@ -22998,7 +22998,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1379262642
 RectTransform:
   m_ObjectHideFlags: 0

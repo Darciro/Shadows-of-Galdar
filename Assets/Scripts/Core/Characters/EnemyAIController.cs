@@ -73,7 +73,7 @@ public class EnemyAIController : MonoBehaviour
         aiAgent.canSearch = true;
         aiAgent.canMove = true;
 
-        if (GameModeManager.Instance != null && GameModeManager.Instance.CurrentMode == GameMode.Combat)
+        if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Combat)
         {
             combatant.OnCombatStart();
         }
@@ -92,7 +92,7 @@ public class EnemyAIController : MonoBehaviour
             else return;
         }
 
-        if (GameModeManager.Instance.CurrentMode == GameMode.Exploration)
+        if (GameManager.Instance.CurrentMode == GameMode.Exploration)
         {
             HandleExplorationBehavior();
         }
@@ -124,7 +124,7 @@ public class EnemyAIController : MonoBehaviour
                 Combatant playerCombatant = playerTransform.GetComponent<Combatant>();
                 if (playerCombatant != null)
                 {
-                    GameModeManager.Instance.RequestCombatStart(combatant, playerCombatant);
+                    GameManager.Instance.RequestCombatStart(combatant, playerCombatant);
                     // RequestCombatStart will change the game mode, which should then
                     // cause this enemy's Combatant.OnCombatStart() to be called,
                     // and then its turn will eventually come via TurnManager.
@@ -309,7 +309,7 @@ public class EnemyAIController : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + viewAngleA * viewRadius);
         Gizmos.DrawLine(transform.position, transform.position + viewAngleB * viewRadius);
 
-        if (aiAgent != null && aiAgent.hasPath && GameModeManager.Instance.CurrentMode == GameMode.Exploration) // Only show exploration path
+        if (aiAgent != null && aiAgent.hasPath && GameManager.Instance.CurrentMode == GameMode.Exploration) // Only show exploration path
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(transform.position, aiAgent.destination);

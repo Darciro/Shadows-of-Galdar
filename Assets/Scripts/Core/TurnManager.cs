@@ -42,7 +42,7 @@ public class TurnManager : MonoBehaviour
         if (!combatants.Any())
         {
             Debug.LogError("[TurnManager] No valid (active and alive) combatants to start combat with!");
-            GameModeManager.Instance?.EndCombat();
+            GameManager.Instance?.EndCombat();
             return;
         }
 
@@ -53,7 +53,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndCombat()
     {
-        Debug.Log("[TurnManager] Combat sequence ended by GameModeManager.");
+        Debug.Log("[TurnManager] Combat sequence ended by GameManager.");
         if (CurrentCombatant != null)
         {
             CurrentCombatant.IsMyTurn = false;
@@ -95,7 +95,7 @@ public class TurnManager : MonoBehaviour
                 if (!CheckCombatEndCondition()) // Re-check, should trigger end.
                 {
                     Debug.LogWarning("[TurnManager] All combatants removed or dead, but combat end not triggered. Forcing end.");
-                    GameModeManager.Instance.EndCombat();
+                    GameManager.Instance.EndCombat();
                 }
                 return;
             }
@@ -115,7 +115,7 @@ public class TurnManager : MonoBehaviour
             if (!CheckCombatEndCondition())
             {
                 Debug.LogWarning("[TurnManager] No valid combatants left to take a turn. Forcing end.");
-                GameModeManager.Instance.EndCombat();
+                GameManager.Instance.EndCombat();
             }
             return;
         }
@@ -164,7 +164,7 @@ public class TurnManager : MonoBehaviour
         if (!aliveCombatants.Any())
         {
             Debug.Log("[TurnManager] Combat ended: No alive combatants left.");
-            if (isCombatActive) GameModeManager.Instance?.EndCombat(); // Only call if combat was active
+            if (isCombatActive) GameManager.Instance?.EndCombat(); // Only call if combat was active
             return true;
         }
 
@@ -174,13 +174,13 @@ public class TurnManager : MonoBehaviour
         if (!playerTeamAlive)
         {
             Debug.Log("[TurnManager] Combat ended: Player team defeated.");
-            if (isCombatActive) GameModeManager.Instance?.EndCombat();
+            if (isCombatActive) GameManager.Instance?.EndCombat();
             return true;
         }
         if (!enemyTeamAlive)
         {
             Debug.Log("[TurnManager] Combat ended: Enemy team defeated.");
-            if (isCombatActive) GameModeManager.Instance?.EndCombat();
+            if (isCombatActive) GameManager.Instance?.EndCombat();
             return true;
         }
         return false;

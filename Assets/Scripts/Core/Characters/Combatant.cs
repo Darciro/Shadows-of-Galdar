@@ -62,8 +62,8 @@ public class Combatant : MonoBehaviour
         {
             originalAISpeed = aiAgent.maxSpeed;
         }
-        // Register with GameModeManager if it exists and this combatant is added dynamically
-        // GameModeManager.Instance?.RefreshCombatantList(); // Or have a dedicated register method
+        // Register with GameManager if it exists and this combatant is added dynamically
+        // GameManager.Instance?.RefreshCombatantList(); // Or have a dedicated register method
     }
 
     public void OnCombatStart()
@@ -252,7 +252,7 @@ public class Combatant : MonoBehaviour
     {
         Debug.Log($"[Combatant] {characterName} has died.");
         gameObject.SetActive(false);
-        if (GameModeManager.Instance != null && GameModeManager.Instance.CurrentMode == GameMode.Combat)
+        if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Combat)
         {
             TurnManager.Instance?.RemoveCombatant(this);
         }

@@ -12,9 +12,14 @@ public enum GameMode
 /// Manages the overall game mode (Exploration or Combat) and handles transitions.
 /// Also responsible for initiating combat.
 /// </summary>
-public class GameModeManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    public static GameModeManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; }
+
+    public static bool IsPaused { get; private set; } = false;
+    [Header("Managers")]
+    [SerializeField] private DungeonMasterBook dungeonMasterBook;
+    [SerializeField] private GameObject gameplayRoot;
 
     [Header("Current Mode")]
     [SerializeField] private GameMode currentMode = GameMode.Exploration;
@@ -32,26 +37,30 @@ public class GameModeManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("[GameModeManager] Duplicate instance found, destroying self.");
+            Debug.LogWarning("[GameManager] Duplicate instance found, destroying self.");
             Destroy(gameObject);
             return;
         }
         Instance = this;
-        // DontDestroyOnLoad(gameObject); // Consider if this manager needs to persist across scenes
+        DontDestroyOnLoad(gameObject); // Consider if this manager needs to persist across scenes
 
-        Debug.Log("[GameModeManager] Initialized. Current Mode: Exploration");
+        Debug.Log("[GameManager] Initialized. Current Mode: Exploration");
+        dungeonMasterBook.gameObject.SetActive(false);
+        gameplayRoot.SetActive(false);
     }
 
     void Start()
     {
-        // Initially find all combatants. This might need to be updated if characters spawn later.
-        RefreshCombatantList();
+        dungeonMasterBook.OpenBook();
+
+        if (!IsPaused)
+            RefreshCombatantList();
     }
 
     public void RefreshCombatantList()
     {
         allCombatantsInScene = FindObjectsOfType<Combatant>().ToList();
-        Debug.Log($"[GameModeManager] Refreshed combatant list. Found: {allCombatantsInScene.Count} combatants.");
+        Debug.Log($"[GameManager] Refreshed combatant list. Found: {allCombatantsInScene.Count} combatants.");
     }
 
     public List<Combatant> GetAllCombatants()
@@ -61,7 +70,6 @@ public class GameModeManager : MonoBehaviour
         return new List<Combatant>(allCombatantsInScene); // Return a copy
     }
 
-
     /// <summary>
     /// Initiates combat with a specific group of participants.
     /// </summary>
@@ -70,13 +78,13 @@ public class GameModeManager : MonoBehaviour
     {
         if (currentMode == GameMode.Combat)
         {
-            Debug.LogWarning("[GameModeManager] Attempted to start combat while already in combat mode.");
+            Debug.LogWarning("[GameManager] Attempted to start combat while already in combat mode.");
             return;
         }
 
         if (participants == null || !participants.Any())
         {
-            Debug.LogWarning("[GameModeManager] Attempted to start combat with no participants.");
+            Debug.LogWarning("[GameManager] Attempted to start combat with no participants.");
             return;
         }
 
@@ -84,11 +92,11 @@ public class GameModeManager : MonoBehaviour
         participants.RemoveAll(item => item == null);
         if (!participants.Any())
         {
-            Debug.LogWarning("[GameModeManager] Attempted to start combat but all provided participants were null.");
+            Debug.LogWarning("[GameManager] Attempted to start combat but all provided participants were null.");
             return;
         }
 
-        Debug.Log($"[GameModeManager] Starting Combat with {participants.Count} participants.");
+        Debug.Log($"[GameManager] Starting Combat with {participants.Count} participants.");
         ChangeMode(GameMode.Combat);
 
         // Notify all combatants that combat has started
@@ -105,7 +113,7 @@ public class GameModeManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("[GameModeManager] TurnManager instance not found! Combat cannot begin.");
+            Debug.LogError("[GameManager] TurnManager instance not found! Combat cannot begin.");
             ChangeMode(GameMode.Exploration); // Revert if TurnManager is missing
         }
     }
@@ -117,11 +125,11 @@ public class GameModeManager : MonoBehaviour
     {
         if (currentMode == GameMode.Exploration)
         {
-            Debug.LogWarning("[GameModeManager] Attempted to end combat while already in exploration mode.");
+            Debug.LogWarning("[GameManager] Attempted to end combat while already in exploration mode.");
             return;
         }
 
-        Debug.Log("[GameModeManager] Ending Combat.");
+        Debug.Log("[GameManager] Ending Combat.");
         ChangeMode(GameMode.Exploration);
 
         // Notify all combatants that combat has ended
@@ -141,7 +149,7 @@ public class GameModeManager : MonoBehaviour
         if (currentMode == newMode) return;
 
         currentMode = newMode;
-        Debug.Log($"[GameModeManager] Game mode changed to: {currentMode}");
+        Debug.Log($"[GameManager] Game mode changed to: {currentMode}");
         OnGameModeChanged?.Invoke(currentMode);
     }
 
@@ -150,7 +158,7 @@ public class GameModeManager : MonoBehaviour
     {
         if (currentMode == GameMode.Combat) return;
 
-        Debug.Log($"[GameModeManager] Combat requested by {initiator.gameObject.name} against {target.gameObject.name}");
+        Debug.Log($"[GameManager] Combat requested by {initiator.gameObject.name} against {target.gameObject.name}");
 
         // For now, let's assume combat involves the initiator, the target,
         // and any other nearby enemies or allies. This logic can be expanded.
@@ -172,5 +180,21 @@ public class GameModeManager : MonoBehaviour
         participants = participants.Distinct().ToList(); // Ensure no duplicates
 
         StartCombat(participants);
+    }
+
+    public void PauseGame()
+    {
+        gameplayRoot.SetActive(false);
+        Time.timeScale = 0f;             // stop all time‐based updates
+        AudioListener.pause = true;      // pause all audio
+        IsPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        gameplayRoot.SetActive(true);
+        Time.timeScale = 1f;             // restore normal time
+        AudioListener.pause = false;     // resume audio
+        IsPaused = false;
     }
 }

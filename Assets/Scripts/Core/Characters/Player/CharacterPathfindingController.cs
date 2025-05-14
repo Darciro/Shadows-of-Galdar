@@ -51,11 +51,11 @@ public class CharacterPathfindingController : MonoBehaviour
     {
         if (aiAgent == null || combatant == null) return;
 
-        if (GameModeManager.Instance.CurrentMode == GameMode.Exploration)
+        if (GameManager.Instance.CurrentMode == GameMode.Exploration)
         {
             HandleExplorationMovement();
         }
-        else if (GameModeManager.Instance.CurrentMode == GameMode.Combat)
+        else if (GameManager.Instance.CurrentMode == GameMode.Combat)
         {
             HandleCombatInput();
         }
@@ -75,7 +75,7 @@ public class CharacterPathfindingController : MonoBehaviour
                 if (enemyCombatant != null && !enemyCombatant.IsPlayerControlled)
                 {
                     Debug.Log($"[CharacterPathfindingController] Clicked on enemy {enemyCombatant.characterName} in exploration. Requesting combat.");
-                    GameModeManager.Instance.RequestCombatStart(combatant, enemyCombatant);
+                    GameManager.Instance.RequestCombatStart(combatant, enemyCombatant);
                     return; // Don't move, combat will start
                 }
             }

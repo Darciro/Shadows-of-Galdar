@@ -1,8 +1,10 @@
 using TMPro;
 using UnityEngine;
 
-public class BookContents : MonoBehaviour
+public class DungeonMasterBook : MonoBehaviour
 {
+    public static DungeonMasterBook Instance { get; private set; }
+
     [TextArea(10, 20)][SerializeField] private string content;
     [Space][SerializeField] private TMP_Text leftSide;
     [SerializeField] private TMP_Text rightSide;
@@ -20,8 +22,18 @@ public class BookContents : MonoBehaviour
         SetupContent();
     }
 
-    private void Awake()
+    /* private void Awake()
     {
+        GameManager.Instance.PauseGame();
+        SetupContent();
+        UpdatePagination();
+    } */
+
+    public void OpenBook()
+    {
+        this.gameObject.SetActive(true);
+        GameManager.Instance.PauseGame();
+
         SetupContent();
         UpdatePagination();
     }
@@ -94,5 +106,7 @@ public class BookContents : MonoBehaviour
     public void CloseBook()
     {
         this.gameObject.SetActive(false);
+        GameManager.Instance?.ResumeGame();
+        Debug.Log("[DungeonMasterBook] Book ended!");
     }
 }

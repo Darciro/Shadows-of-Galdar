@@ -45,7 +45,6 @@ public class WallTransparencyController : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         FindPlayer();
         RegisterAllMarkedTilemaps();
