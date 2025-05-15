@@ -15,11 +15,13 @@ public enum GameMode
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
+    public static bool Init { get; private set; } = false;
     public static bool IsPaused { get; private set; } = false;
+
     [Header("Managers")]
     [SerializeField] private DungeonMasterBook dungeonMasterBook;
     [SerializeField] private GameObject gameplayRoot;
+    public GameObject SceneTransition;
 
     [Header("Current Mode")]
     [SerializeField] private GameMode currentMode = GameMode.Exploration;
@@ -47,10 +49,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] Initialized. Current Mode: Exploration");
         dungeonMasterBook.gameObject.SetActive(false);
         gameplayRoot.SetActive(false);
+        SceneTransition.SetActive(false);
     }
 
     void Start()
     {
+        Init = true;
         dungeonMasterBook.OpenBook();
 
         if (!IsPaused)

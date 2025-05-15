@@ -1,7 +1,6 @@
 using UnityEngine;
 using Pathfinding;
 using System.Collections;
-using System.Collections.Generic; // For List
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(IAstarAI))]
@@ -46,8 +45,11 @@ public class EnemyAIController : MonoBehaviour
     [SerializeField] private bool enableDebugLogs = false; // Renamed from debugLogs for consistency
     public bool drawGizmos = true;
 
-    void Awake()
+    /* void Awake()
     {
+        if (!GameManager.Init)
+            return;
+
         aiAgent = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
         combatant = GetComponent<Character>();
@@ -57,10 +59,17 @@ public class EnemyAIController : MonoBehaviour
             Debug.LogError($"[EnemyAIController] Missing Seeker, IAstarAI, or Character on {name}. Disabling.", this);
             enabled = false;
         }
-    }
+    } */
 
     void Start()
     {
+        if (!GameManager.Init)
+            return;
+
+        aiAgent = GetComponent<IAstarAI>();
+        seeker = GetComponent<Seeker>();
+        combatant = GetComponent<Character>();
+
         patrolOrigin = transform.position;
         combatant.IsPlayerControlled = false;
 
@@ -85,6 +94,9 @@ public class EnemyAIController : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.Init)
+            return;
+
         if (playerTransform == null)
         {
             GameObject playerGO = GameObject.FindGameObjectWithTag("Player");

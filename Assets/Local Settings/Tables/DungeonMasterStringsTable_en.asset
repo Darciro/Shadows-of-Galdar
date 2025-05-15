@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: DungeonMasterStringsTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: fd939be17f70f6d42be0603992a8e521, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 157324124160
+    m_Localized: "<b>- Do the dead scare you? - asked Ser Waymar Royce with no more
+      than a hint of a smile on his face.</b>\r\n\r\n<color=#FF0000>Gared</color>
+      didn't take the bait. He was an old man, over fifty, and had seen the nobles
+      come and go.\r\n\r\n- <i>A dead man is a dead man</i> - he replied. - We have
+      nothing to do with the dead.\r\n\r\n- But are they dead? - Royce asked softly.
+      - What proof do we have of that?\r\n\r\n- Will saw them,\u2019 said Gared.
+      - If he says they're dead, that's proof enough for me.\r\n\r\nWill already
+      knew that they would drag him into the discussion sooner or later. He wished
+      it had been later.\r\n\r\n- My mum told me that dead people don't sing,\u2019
+      Will said.\r\n\r\n- \u2018My wet nurse said the same thing, Will,\u2019 Royce
+      replied. - Never believe anything you hear next to a woman's chest. There are
+      things to be learnt even from the dead,\u2019 his voice echoed, too loud in
+      the dimness of the forest.\r\n\r\n- We have a long ride ahead of us,\u2019
+      Gared emphasised. - Eight days, maybe nine. And night is about to fall.\r\n\r\nSer
+      Waymar Royce glanced disinterestedly at the sky.\r\n\r\n- That happens every
+      day at this time. Do you lose your virility in the dark, Gared?\r\n\r\nWill
+      saw Gared's mouth tighten, the anger only barely suppressed in the eyes that
+      peered out from under the thick black hood of his cloak. He had spent forty
+      years in the Night's Watch, from the time he was a young boy to the time he
+      became a man, and he wasn't used to being devalued. But it was more than that.
+      Will could detect in the older man something else beneath the wounded pride.
+      He could taste it: a nervous tension that came dangerously close to fear.\r\n\r\nWill
+      shared the other man's discomfort. He had been on the Wall for four years.
+      When he had been sent there, all the old stories had resurfaced in his mind,
+      and his insides had turned to water. He was now a veteran of a hundred patrols,
+      and the dark, endless wilderness that the men of the south called the haunted
+      forest no longer terrified him.\r\n\r\nUntil that night. Something seemed different
+      then. There was something threatening in that darkness that made the hairs
+      on the back of his neck stand on end. They had been riding for nine days, north
+      and north-west, and then north again, each time further from the Wall, following
+      the trail of a band of savage raiders without diversions. Each day had been
+      worse than the last. This one had been the worst of all. A cold wind blew from
+      the north and made the trees rustle like living things. All day long, Will
+      had had the feeling that something was watching him, something cold and implacable
+      that didn't like him. Gared had felt it too. Will wanted with all his might
+      to ride quickly back to the safety of the Wall, but this was not a feeling
+      he could share with a commander.\r\n\r\n"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

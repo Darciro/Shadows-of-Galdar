@@ -1,47 +1,50 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
 
 public class DungeonMasterBook : MonoBehaviour
 {
     public static DungeonMasterBook Instance { get; private set; }
-
-    [TextArea(10, 20)][SerializeField] private string content;
+    [SerializeField] private LocalizedString bookContent;
     [Space][SerializeField] private TMP_Text leftSide;
     [SerializeField] private TMP_Text rightSide;
     [Space][SerializeField] private TMP_Text leftPagination;
     [SerializeField] private TMP_Text rightPagination;
     [Space][SerializeField] private TMP_Text closeBook;
 
+    private void OnEnable()
+    {
+        bookContent.StringChanged += OnContentChanged;
+    }
+
+    private void OnDisable()
+    {
+        bookContent.StringChanged -= OnContentChanged;
+    }
+
+    private void OnContentChanged(string localized)
+    {
+        leftSide.text = localized;
+        rightSide.text = localized;
+        UpdatePagination();
+    }
+
     private void OnValidate()
     {
         UpdatePagination();
-
-        if (leftSide.text == content)
-            return;
-
-        SetupContent();
     }
-
-    /* private void Awake()
-    {
-        GameManager.Instance.PauseGame();
-        SetupContent();
-        UpdatePagination();
-    } */
 
     public void OpenBook()
     {
+        Debug.Log("[DungeonMasterBook] Book was opened!");
         this.gameObject.SetActive(true);
         GameManager.Instance.PauseGame();
 
-        SetupContent();
+        // SetupContent();
         UpdatePagination();
-    }
-
-    private void SetupContent()
-    {
-        leftSide.text = content;
-        rightSide.text = content;
     }
 
     private void UpdatePagination()
@@ -105,8 +108,15 @@ public class DungeonMasterBook : MonoBehaviour
 
     public void CloseBook()
     {
-        this.gameObject.SetActive(false);
-        GameManager.Instance?.ResumeGame();
+        SceneTransition sceneTransition = GameManager.Instance.GetComponent<SceneTransition>();
+        sceneTransition.StartTransition();
+        StartCoroutine(CloseBookCoroutine());
+    }
+
+    IEnumerator CloseBookCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+        gameObject.SetActive(false);
         Debug.Log("[DungeonMasterBook] Book ended!");
     }
 }

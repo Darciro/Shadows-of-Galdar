@@ -49,6 +49,9 @@ public class CharacterPathfindingController : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.Init)
+            return;
+
         if (aiAgent == null || combatant == null) return;
 
         if (GameManager.Instance.CurrentMode == GameMode.Exploration)
@@ -121,6 +124,7 @@ public class CharacterPathfindingController : MonoBehaviour
         {
             Debug.Log("[CharacterPathfindingController] Player pressed Space to end turn.");
             combatant.EndTurn();
+            TurnManager.Instance.NextTurn();
         }
     }
 

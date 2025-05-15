@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: DungeonMasterStringsTable_pt
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: fd939be17f70f6d42be0603992a8e521, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 157324124160
+    m_Localized: "<b>- Os mortos o assustam? - perguntou Sor Waymar Royce com n\xE3o
+      mais do que uma sugest\xE3o de sorriso no rosto.</b>\n\n<color=#FF0000>Gared</color>
+      n\xE3o mordeu a isca. Era um homem velho, com mais de cinquenta anos, e vira
+      os nobres chegarem e partirem.\n\n- <i>Um morto \xE9 um morto</i>- respondeu.
+      - Nada temos a tratar com os mortos.\n\n- Mas est\xE3o mortos? - perguntou
+      Royce com suavidade. - Que prova temos disso?\n\n- Will os viu - disse Gared.
+      - Se ele diz que est\xE3o mortos, \xE9 prova suficiente para mim.\n\nWill j\xE1
+      sabia que o arrastariam para a discuss\xE3o mais cedo ou mais tarde. Desejou
+      que tivesse sido mais tarde.\n\n- Minha m\xE3e me disse que os mortos n\xE3o
+      cantam - contou Will.\n\n- Minha ama de leite disse a mesma coisa, Will - respondeu
+      Royce. - Nunca acredite em nada do que ouvir junto ao peito de uma mulher.
+      H\xE1 coisas a aprender mesmo com os mortos - sua voz criou ecos, alta demais
+      na penumbra da floresta.\n\n- Temos uma longa cavalgada pela frente - salientou
+      Gared. - Oito dias, talvez nove. E a noite est\xE1 para cair.\n\nSor Waymar
+      Royce olhou para o c\xE9u de relance, com desinteresse.\n\n- Isso acontece
+      todos os dias a esta hora. Voc\xEA perde a virilidade no escuro, Gared?\n\nWill
+      via a boca de Gared comprimida, a ira s\xF3 a custo reprimida nos olhos que
+      espreitavam sob o espesso capuz negro de seu manto. Ele passara quarenta anos
+      na Patrulha da Noite, desde que era jovem at\xE9 se tornar um homem, e n\xE3o
+      estava acostumado a ser desvalorizado. Mas era mais do que isso. Will conseguia
+      detectar no homem mais velho algo mais sob o orgulho ferido. Era poss\xEDvel
+      sentir-lhe o gosto: uma tens\xE3o nervosa que se aproximava perigosamente do
+      medo.\n\nWill partilhava o desconforto do outro homem. Estava havia quatro
+      anos na Muralha. Quando fora enviado para l\xE1, todas as velhas hist\xF3rias
+      ressurgiram em sua mente, e suas entranhas tinham virado \xE1gua. Era agora
+      um veterano de cem patrulhas, e a sombria e infinita terra selvagem a que os
+      homens do sul chamavam de floresta assombrada j\xE1 n\xE3o o aterrorizava.\n\nAt\xE9
+      aquela noite. Algo parecia diferente ent\xE3o. Havia naquela escurid\xE3o algo
+      amea\xE7ador que fazia os pelos de sua nuca eri\xE7arem. Cavalgavam havia nove
+      dias, para norte e noroeste, e depois de novo para norte, cada vez para mais
+      distante da Muralha, seguindo sem desvios a trilha de um bando de salteadores
+      selvagens. Cada dia fora pior que o anterior. Aquele tinha sido o pior de todos.
+      Um vento frio soprava do norte e fazia as \xE1rvores sussurrarem como coisas
+      vivas. Durante todo o dia, Will tivera a sensa\xE7\xE3o de que alguma coisa
+      o observava, algo frio e implac\xE1vel que n\xE3o gostava dele. Gared tamb\xE9m
+      sentira. Will desejava com toda a sua for\xE7a cavalgar rapidamente de volta
+      \xE0 seguran\xE7a da Muralha, mas este n\xE3o era um sentimento que poderia
+      partilhar com um comandante.\n\n"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
