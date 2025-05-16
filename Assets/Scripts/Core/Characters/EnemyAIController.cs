@@ -1,23 +1,14 @@
 using UnityEngine;
 using Pathfinding;
 using System.Collections;
+using System.Collections.Generic; // For List
 
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(IAstarAI))]
 [RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(Character))] // Ensure Character component is present
+[RequireComponent(typeof(Character))]
 public class EnemyAIController : MonoBehaviour
 {
-    public enum AIState
-    {
-        Exploring_Patrolling,
-        Exploring_Pursuing,
-        Combat_Deciding,
-        Combat_Moving,
-        Combat_Attacking,
-        Combat_Idle
-    }
-
     [Header("State")]
     [SerializeField] private AIState currentState = AIState.Exploring_Patrolling;
 
@@ -45,31 +36,21 @@ public class EnemyAIController : MonoBehaviour
     [SerializeField] private bool enableDebugLogs = false; // Renamed from debugLogs for consistency
     public bool drawGizmos = true;
 
-    /* void Awake()
+    void Awake()
     {
-        if (!GameManager.Init)
-            return;
-
         aiAgent = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
         combatant = GetComponent<Character>();
 
         if (aiAgent == null || seeker == null || combatant == null)
         {
-            Debug.LogError($"[EnemyAIController] Missing Seeker, IAstarAI, or Character on {name}. Disabling.", this);
+            Debug.LogError($"[EnemyAIController] Missing Seeker, IAstarAI, or Combatant on {name}. Disabling.", this);
             enabled = false;
         }
-    } */
+    }
 
     void Start()
     {
-        if (!GameManager.Init)
-            return;
-
-        aiAgent = GetComponent<IAstarAI>();
-        seeker = GetComponent<Seeker>();
-        combatant = GetComponent<Character>();
-
         patrolOrigin = transform.position;
         combatant.IsPlayerControlled = false;
 
@@ -82,7 +63,7 @@ public class EnemyAIController : MonoBehaviour
         aiAgent.canSearch = true;
         aiAgent.canMove = true;
 
-        if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Combat)
+        if (GameManager.Instance != null && GameManager.CurrentMode == GameMode.Combat)
         {
             combatant.OnCombatStart();
         }
@@ -94,9 +75,6 @@ public class EnemyAIController : MonoBehaviour
 
     void Update()
     {
-        if (!GameManager.Init)
-            return;
-
         if (playerTransform == null)
         {
             GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
@@ -104,7 +82,7 @@ public class EnemyAIController : MonoBehaviour
             else return;
         }
 
-        if (GameManager.Instance.CurrentMode == GameMode.Exploration)
+        if (GameManager.CurrentMode == GameMode.Exploration)
         {
             HandleExplorationBehavior();
         }
@@ -138,7 +116,7 @@ public class EnemyAIController : MonoBehaviour
                 {
                     GameManager.Instance.RequestCombatStart(combatant, playerCombatant);
                     // RequestCombatStart will change the game mode, which should then
-                    // cause this enemy's Character.OnCombatStart() to be called,
+                    // cause this enemy's Combatant.OnCombatStart() to be called,
                     // and then its turn will eventually come via TurnManager.
                 }
             }
@@ -225,7 +203,7 @@ public class EnemyAIController : MonoBehaviour
 
     public void PlanCombatTurn()
     {
-        if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} (Character: {combatant.characterName}) planning combat turn. AP: {combatant.CurrentActionPoints}");
+        if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} (Combatant: {combatant.characterName}) planning combat turn. AP: {combatant.CurrentActionPoints}");
         if (playerTransform == null)
         {
             combatant.EndTurn();
@@ -247,10 +225,10 @@ public class EnemyAIController : MonoBehaviour
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} attempting to attack player.");
             combatant.TryAttack(playerCombatant);
-            // TryAttack queues the action. Character processes its queue.
+            // TryAttack queues the action. Combatant processes its queue.
             // If AI has more AP and wants to do more, it needs to wait for this action to complete
             // or queue more actions. For simplicity, one main "intent" (attack or move) per PlanCombatTurn call.
-            // The Character's action queue will call EndTurn if it's empty and it's AI.
+            // The Combatant's action queue will call EndTurn if it's empty and it's AI.
             return;
         }
 
@@ -264,12 +242,12 @@ public class EnemyAIController : MonoBehaviour
             Vector3 targetMovePos = playerTransform.position - directionToPlayer * (combatant.attackRange * 0.8f);
 
             combatant.RequestMoveTo(targetMovePos);
-            // Similar to attack, this queues the move. Character handles execution.
+            // Similar to attack, this queues the move. Combatant handles execution.
             return;
         }
 
         // 3. If no action was queued (e.g., not enough AP, or already in range but couldn't attack), end turn.
-        // The Character's ProcessActionQueue will call EndTurn if it's an AI and the queue is empty.
+        // The Combatant's ProcessActionQueue will call EndTurn if it's an AI and the queue is empty.
         if (combatant.ActionQueueCount == 0) // Accessing the new public property
         {
             if (enableDebugLogs) Debug.Log($"[EnemyAIController] {name} has no suitable actions queued or AP. Ending turn.");
@@ -321,7 +299,7 @@ public class EnemyAIController : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + viewAngleA * viewRadius);
         Gizmos.DrawLine(transform.position, transform.position + viewAngleB * viewRadius);
 
-        if (aiAgent != null && aiAgent.hasPath && GameManager.Instance.CurrentMode == GameMode.Exploration) // Only show exploration path
+        if (aiAgent != null && aiAgent.hasPath && GameManager.CurrentMode == GameMode.Exploration) // Only show exploration path
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawLine(transform.position, aiAgent.destination);

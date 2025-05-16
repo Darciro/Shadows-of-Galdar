@@ -2,16 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-public enum GameMode
-{
-    Exploration,
-    Combat
-}
-
-/// <summary>
-/// Manages the overall game mode (Exploration or Combat) and handles transitions.
-/// Also responsible for initiating combat.
-/// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -24,14 +14,15 @@ public class GameManager : MonoBehaviour
     public GameObject SceneTransition;
 
     [Header("Current Mode")]
-    [SerializeField] private GameMode currentMode = GameMode.Exploration;
-    public GameMode CurrentMode => currentMode;
+    [SerializeField] private GameMode currentMode;
+    public static GameMode CurrentMode { get; private set; } = GameMode.Exploration;
+
+    [Header("Debug")]
+    public bool ShadowDebugger = false;
 
     public delegate void GameModeChangedHandler(GameMode newMode);
     public event GameModeChangedHandler OnGameModeChanged;
 
-    // List of all potential combatants in the scene
-    // Consider making this dynamic if enemies spawn/despawn frequently during exploration.
     private List<Character> allCombatantsInScene = new List<Character>();
 
 
@@ -39,14 +30,12 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("[GameManager] Duplicate instance found, destroying self.");
             Destroy(gameObject);
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Consider if this manager needs to persist across scenes
+        DontDestroyOnLoad(gameObject);
 
-        Debug.Log("[GameManager] Initialized. Current Mode: Exploration");
         dungeonMasterBook.gameObject.SetActive(false);
         gameplayRoot.SetActive(false);
         SceneTransition.SetActive(false);
@@ -55,16 +44,73 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Init = true;
-        dungeonMasterBook.OpenBook();
-
-        if (!IsPaused)
-            RefreshCombatantList();
+        if (ShadowDebugger)
+            gameplayRoot.SetActive(true);
+        else
+            dungeonMasterBook.OpenBook();
     }
 
+    /// <summary>
+    /// Populate allCombatantsInScene with only those Characters whose renderers
+    /// are inside the main camera’s view frustum.
+    /// </summary>
     public void RefreshCombatantList()
     {
-        allCombatantsInScene = FindObjectsOfType<Character>().ToList();
-        Debug.Log($"[GameManager] Refreshed combatant list. Found: {allCombatantsInScene.Count} combatants.");
+        allCombatantsInScene.Clear();
+
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            Debug.LogWarning("[GameManager] No main camera found – cannot refresh visible combatants.");
+            return;
+        }
+
+        // build the 6 planes of the camera frustum
+        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
+
+        // find every Character in the scene
+        foreach (Character c in FindObjectsOfType<Character>())
+        {
+            if (c == null) continue;
+
+            // assume each Character has at least one Renderer in its children
+            Renderer rend = c.GetComponentInChildren<Renderer>();
+            if (rend != null && GeometryUtility.TestPlanesAABB(frustumPlanes, rend.bounds))
+            {
+                allCombatantsInScene.Add(c);
+            }
+        }
+
+        Debug.Log($"[GameManager] Refreshed combatant list. Visible: {allCombatantsInScene.Count} combatants.");
+    }
+
+    /// <summary>
+    /// Called when someone (player or enemy) actually wants to fight.
+    /// We rebuild the list to only “in‐view” combatants, then pick
+    /// initiator, target + everyone else in view.
+    /// </summary>
+    public void RequestCombatStart(Character initiator, Character target)
+    {
+        if (currentMode == GameMode.Combat) return;
+
+        Debug.Log($"[GameManager] Combat requested by {initiator.name} against {target.name}");
+
+        // only build the list of combatants now, and only those on‐screen
+        RefreshCombatantList();
+
+        // build our participants list
+        List<Character> participants = new List<Character>();
+        if (initiator != null) participants.Add(initiator);
+        if (target != null && !participants.Contains(target))
+            participants.Add(target);
+
+        // add any other visible combatants
+        foreach (var c in allCombatantsInScene)
+            if (c != null && !participants.Contains(c))
+                participants.Add(c);
+
+        // ensure no duplicates and kick off combat
+        OnStartCombat(participants.Distinct().ToList());
     }
 
     public List<Character> GetAllCombatants()
@@ -78,7 +124,7 @@ public class GameManager : MonoBehaviour
     /// Initiates combat with a specific group of participants.
     /// </summary>
     /// <param name="participants">The combatants involved in this specific combat encounter.</param>
-    public void StartCombat(List<Character> participants)
+    public void OnStartCombat(List<Character> participants)
     {
         if (currentMode == GameMode.Combat)
         {
@@ -112,7 +158,7 @@ public class GameManager : MonoBehaviour
         // Initialize and start the TurnManager
         if (TurnManager.Instance != null)
         {
-            UIManager.Instance.ShowTurnPhase("Combat mode");
+            // UIManager.Instance.ShowTurnPhase("Combat mode");
             TurnManager.Instance.StartCombat(participants);
         }
         else
@@ -125,7 +171,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Ends the current combat and switches back to Exploration mode.
     /// </summary>
-    public void EndCombat()
+    public void OnEndCombat()
     {
         if (currentMode == GameMode.Exploration)
         {
@@ -133,57 +179,32 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("[GameManager] Ending Combat.");
-        ChangeMode(GameMode.Exploration);
-
         // Notify all combatants that combat has ended
         foreach (Character combatant in allCombatantsInScene)
         {
             if (combatant != null) combatant.OnCombatEnd();
         }
 
-        if (TurnManager.Instance != null)
-        {
-            TurnManager.Instance.EndCombat();
-        }
+        Debug.Log("[GameManager] Ending Combat.");
+        ChangeMode(GameMode.Exploration);
     }
 
-    private void ChangeMode(GameMode newMode)
+    public void ChangeMode(GameMode newMode)
     {
         if (currentMode == newMode) return;
 
         currentMode = newMode;
+        if (currentMode == GameMode.Combat)
+        {
+            UIManager.Instance.ShowTurnPhase("Combat mode");
+        }
+        else
+        {
+            UIManager.Instance.ShowTurnPhase("Exploration mode");
+        }
+
         Debug.Log($"[GameManager] Game mode changed to: {currentMode}");
         OnGameModeChanged?.Invoke(currentMode);
-    }
-
-    // Example trigger: Call this from player attack script or enemy detection script
-    public void RequestCombatStart(Character initiator, Character target)
-    {
-        if (currentMode == GameMode.Combat) return;
-
-        Debug.Log($"[GameManager] Combat requested by {initiator.gameObject.name} against {target.gameObject.name}");
-
-        // For now, let's assume combat involves the initiator, the target,
-        // and any other nearby enemies or allies. This logic can be expanded.
-        List<Character> participants = new List<Character>();
-        if (initiator != null) participants.Add(initiator);
-        if (target != null && !participants.Contains(target)) participants.Add(target);
-
-        // Simple: Add all other combatants for now. 
-        // TODO: Implement more sophisticated logic to determine actual participants (e.g., based on factions, aggro radius)
-        foreach (var combatant in allCombatantsInScene)
-        {
-            if (combatant != null && !participants.Contains(combatant))
-            {
-                // Example: Add all other enemies if player initiates, or all allies if enemy initiates
-                // For now, just add everyone to test the system
-                participants.Add(combatant);
-            }
-        }
-        participants = participants.Distinct().ToList(); // Ensure no duplicates
-
-        StartCombat(participants);
     }
 
     public void PauseGame()

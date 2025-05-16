@@ -15051,6 +15051,7 @@ MonoBehaviour:
   gameplayRoot: {fileID: 969382722}
   SceneTransition: {fileID: 900063150}
   currentMode: 0
+  ShadowDebugger: 1
 --- !u!114 &729240499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21461,7 +21462,7 @@ MonoBehaviour:
   fadedAlpha: 0.25
   fadeRadius: 1
   fadeSpeed: 2
-  enableDebugLogging: 1
+  enableDebugLogging: 0
 --- !u!1 &1115814642
 GameObject:
   m_ObjectHideFlags: 0
@@ -23722,7 +23723,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673332b21f5551645a302bb75591e52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathfindingPlaneZ: 0
   selectedTargetEnemy: {fileID: 0}
 --- !u!114 &1425592488
 MonoBehaviour:

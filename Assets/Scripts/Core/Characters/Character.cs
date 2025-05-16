@@ -7,13 +7,6 @@ public class Character : CharacterStats
 {
     [Header("Character Status")]
     public string characterName = "Character";
-    // [Space] public CharacterStats Stats = new CharacterStats();
-
-    /* public int MaxHealth = 100;
-    public int CurrentHealth;
-    public int MaxActionPoints = 10;
-    public int CurrentActionPoints;
-    public int Initiative = 10; */
 
     [Header("Movement")]
     [Tooltip("AP cost per node/segment in the A* path.")]
@@ -80,6 +73,12 @@ public class Character : CharacterStats
 
     public void OnCombatEnd()
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.Log($"[Character] {characterName} is inactive; skipping OnCombatEnd.");
+            return;
+        }
+
         Debug.Log($"[Character] {characterName} ({gameObject.name}) exiting combat mode.");
         IsMyTurn = false;
         actionQueue.Clear();
@@ -251,7 +250,7 @@ public class Character : CharacterStats
     {
         Debug.Log($"[Character] {characterName} has died.");
         gameObject.SetActive(false);
-        if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Combat)
+        if (GameManager.Instance != null && GameManager.CurrentMode == GameMode.Combat)
         {
             TurnManager.Instance?.RemoveCombatant(this);
         }
@@ -293,46 +292,70 @@ public class Character : CharacterStats
 
     private IEnumerator ExecuteAction(CombatAction action)
     {
-        if (enableDebugLogging) Debug.Log($"[Character] {characterName} starting to execute action from queue.");
+        if (enableDebugLogging)
+            Debug.Log($"[Character] {characterName} starting to execute action from queue.");
+
+        // Safety: if someone cleared the queue before we got here, bail out immediately
+        if (actionQueue.Count == 0)
+        {
+            Debug.LogWarning($"[Character] {characterName}: actionQueue empty on ExecuteAction start; aborting.");
+            isPerformingAction = false;
+            yield break;
+        }
+
         bool actionCompleted = false;
 
-        // Ensure AI can move if the action might involve it (like TryMoveTo's queued action)
-        if (aiAgent != null) aiAgent.canMove = true;
+        // Ensure AI can move if this action needs movement
+        if (aiAgent != null)
+            aiAgent.canMove = true;
 
+        // Run the action until it reports completion
         while (!actionCompleted)
         {
-            if (!IsMyTurn) // Safety check if turn ended prematurely
+            // If the turn was ended prematurely, stop everything
+            if (!IsMyTurn)
             {
-                Debug.LogWarning($"[Character] {characterName}'s turn ended while action was executing.");
+                Debug.LogWarning($"[Character] {characterName}'s turn ended mid-action.");
                 isPerformingAction = false;
                 yield break;
             }
+
             actionCompleted = action.Invoke();
             if (!actionCompleted)
-            {
                 yield return null;
-            }
         }
 
-        if (aiAgent != null) aiAgent.canMove = false; // Default to not moving after an action
+        // After the action finishes, lock movement again
+        if (aiAgent != null)
+            aiAgent.canMove = false;
 
-        actionQueue.Dequeue();
+        // Now remove this action from the queue, but only if it's still there
+        if (actionQueue.Count > 0)
+        {
+            actionQueue.Dequeue();
+        }
+        else
+        {
+            Debug.LogWarning($"[Character] {characterName}: Tried to Dequeue but actionQueue was already empty.");
+        }
+
         isPerformingAction = false;
-        if (enableDebugLogging) Debug.Log($"[Character] {characterName} finished executing action. Actions in queue: {actionQueue.Count}");
 
+        if (enableDebugLogging)
+            Debug.Log($"[Character] {characterName} finished action. Remaining in queue: {actionQueue.Count}");
 
+        // If there are more actions and we still have AP, keep processing
         if (actionQueue.Count > 0 && CurrentActionPoints > 0 && IsMyTurn)
         {
             ProcessActionQueue();
         }
-        else if (IsMyTurn) // No more actions or no AP
+        else if (IsMyTurn)
         {
-            if (enableDebugLogging) Debug.Log($"[Character] {characterName} has no more actions or AP. IsPlayer: {IsPlayerControlled}");
-            if (!IsPlayerControlled) // AI automatically ends turn if out of actions/AP
-            {
+            // If AI and no more actions/AP, automatically end turn
+            if (!IsPlayerControlled)
                 EndTurn();
-            }
-            // Player waits for explicit "End Turn" button press
+            // If player, wait for explicit end-turn input
         }
     }
+
 }

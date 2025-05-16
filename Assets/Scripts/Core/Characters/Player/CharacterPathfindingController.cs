@@ -8,10 +8,8 @@ public class CharacterPathfindingController : MonoBehaviour
 {
     private IAstarAI aiAgent;
     private Camera mainCamera;
-    private Character combatant; // Reference to the Character component
-
-    [Tooltip("The Z-coordinate of the plane on which pathfinding should occur (e.g., ground plane).")]
-    public float pathfindingPlaneZ = 0f;
+    private Character combatant;
+    private float pathfindingPlaneZ = 0f;
 
     // Example: For selecting an enemy to attack
     public Character selectedTargetEnemy = null;
@@ -54,11 +52,11 @@ public class CharacterPathfindingController : MonoBehaviour
 
         if (aiAgent == null || combatant == null) return;
 
-        if (GameManager.Instance.CurrentMode == GameMode.Exploration)
+        if (GameManager.CurrentMode == GameMode.Exploration)
         {
             HandleExplorationMovement();
         }
-        else if (GameManager.Instance.CurrentMode == GameMode.Combat)
+        else if (GameManager.CurrentMode == GameMode.Combat)
         {
             HandleCombatInput();
         }
@@ -122,6 +120,7 @@ public class CharacterPathfindingController : MonoBehaviour
         // Example: End turn with a key press (e.g., Space bar)
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            GameManager.Instance.OnGameModeChanged += GameManager.Instance.ChangeMode;
             Debug.Log("[CharacterPathfindingController] Player pressed Space to end turn.");
             combatant.EndTurn();
             TurnManager.Instance.NextTurn();

@@ -274,12 +274,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e83807f5205d8f4c9c566943aed6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Strength: 10
-  Dexterity: 10
-  Constitution: 10
-  Intelligence: 10
-  Perception: 10
-  Charisma: 10
+  Strength: 7
+  Dexterity: 8
+  Constitution: 6
+  Intelligence: 4
+  Perception: 12
+  Charisma: 3
   MaxHealth: 100
   CurrentHealth: 100
   MaxActionPoints: 2

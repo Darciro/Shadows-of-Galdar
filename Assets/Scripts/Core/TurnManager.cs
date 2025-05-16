@@ -25,6 +25,28 @@ public class TurnManager : MonoBehaviour
         Instance = this;
     }
 
+    void Update()
+    {
+        // Nothing to do if combat isn’t running or there is no current turn
+        if (!isCombatActive || CurrentCombatant == null)
+            return;
+
+        if (CurrentCombatant.CurrentActionPoints <= 0)
+        {
+            Debug.Log($"[TurnManager] {CurrentCombatant.characterName} has no AP—ending turn.");
+            EndCurrentTurn();
+            return;
+        }
+
+        // 2) Player pressed Space to end their turn early
+        if (CurrentCombatant.IsPlayerControlled && Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log($"[TurnManager] Player pressed Space—ending {CurrentCombatant.characterName}’s turn.");
+            EndCurrentTurn();
+            return;
+        }
+    }
+
     public void StartCombat(List<Character> initialParticipants)
     {
         if (isCombatActive)
@@ -42,25 +64,13 @@ public class TurnManager : MonoBehaviour
         if (!combatants.Any())
         {
             Debug.LogError("[TurnManager] No valid (active and alive) combatants to start combat with!");
-            GameManager.Instance?.EndCombat();
+            GameManager.Instance.OnEndCombat();
             return;
         }
 
         isCombatActive = true;
         currentCombatantIndex = -1;
-        NextTurn();
-    }
-
-    public void EndCombat()
-    {
-        Debug.Log("[TurnManager] Combat sequence ended by GameManager.");
-        if (CurrentCombatant != null)
-        {
-            CurrentCombatant.IsMyTurn = false;
-        }
-        combatants.Clear();
-        currentCombatantIndex = -1;
-        isCombatActive = false;
+        // NextTurn();
     }
 
     public void NextTurn()
@@ -95,7 +105,7 @@ public class TurnManager : MonoBehaviour
                 if (!CheckCombatEndCondition()) // Re-check, should trigger end.
                 {
                     Debug.LogWarning("[TurnManager] All combatants removed or dead, but combat end not triggered. Forcing end.");
-                    GameManager.Instance.EndCombat();
+                    GameManager.Instance.OnEndCombat();
                 }
                 return;
             }
@@ -115,7 +125,7 @@ public class TurnManager : MonoBehaviour
             if (!CheckCombatEndCondition())
             {
                 Debug.LogWarning("[TurnManager] No valid combatants left to take a turn. Forcing end.");
-                GameManager.Instance.EndCombat();
+                GameManager.Instance.OnEndCombat();
             }
             return;
         }
@@ -164,7 +174,7 @@ public class TurnManager : MonoBehaviour
         if (!aliveCombatants.Any())
         {
             Debug.Log("[TurnManager] Combat ended: No alive combatants left.");
-            if (isCombatActive) GameManager.Instance?.EndCombat(); // Only call if combat was active
+            if (isCombatActive) GameManager.Instance.OnEndCombat(); // Only call if combat was active
             return true;
         }
 
@@ -174,13 +184,13 @@ public class TurnManager : MonoBehaviour
         if (!playerTeamAlive)
         {
             Debug.Log("[TurnManager] Combat ended: Player team defeated.");
-            if (isCombatActive) GameManager.Instance?.EndCombat();
+            if (isCombatActive) GameManager.Instance.OnEndCombat();
             return true;
         }
         if (!enemyTeamAlive)
         {
             Debug.Log("[TurnManager] Combat ended: Enemy team defeated.");
-            if (isCombatActive) GameManager.Instance?.EndCombat();
+            if (isCombatActive) GameManager.Instance.OnEndCombat();
             return true;
         }
         return false;
