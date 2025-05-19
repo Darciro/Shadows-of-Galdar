@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
 
     private List<Character> allCombatantsInScene = new List<Character>();
 
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -82,6 +81,7 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log($"[GameManager] Refreshed combatant list. Visible: {allCombatantsInScene.Count} combatants.");
+        UIManager.Instance.AddLog($"[GameManager] Refreshed combatant list. Visible: {allCombatantsInScene.Count} combatants.");
     }
 
     /// <summary>
@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
         if (currentMode == GameMode.Combat) return;
 
         Debug.Log($"[GameManager] Combat requested by {initiator.name} against {target.name}");
+        UIManager.Instance.AddLog($"[GameManager] Combat requested by {initiator.name} against {target.name}");
 
         // only build the list of combatants now, and only those on‐screen
         RefreshCombatantList();
@@ -147,6 +148,7 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log($"[GameManager] Starting Combat with {participants.Count} participants.");
+        UIManager.Instance.AddLog($"[GameManager] Starting Combat with {participants.Count} participants.");
         ChangeMode(GameMode.Combat);
 
         // Notify all combatants that combat has started
@@ -186,6 +188,7 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("[GameManager] Ending Combat.");
+        UIManager.Instance.AddLog("[GameManager] Ending Combat.");
         ChangeMode(GameMode.Exploration);
     }
 
@@ -194,6 +197,8 @@ public class GameManager : MonoBehaviour
         if (currentMode == newMode) return;
 
         currentMode = newMode;
+        CurrentMode = newMode;
+
         if (currentMode == GameMode.Combat)
         {
             UIManager.Instance.ShowTurnPhase("Combat mode");
@@ -204,6 +209,7 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log($"[GameManager] Game mode changed to: {currentMode}");
+        UIManager.Instance.AddLog($"[GameManager] Game mode changed to: {currentMode}");
         OnGameModeChanged?.Invoke(currentMode);
     }
 

@@ -33,7 +33,7 @@ public class TurnManager : MonoBehaviour
 
         if (CurrentCombatant.CurrentActionPoints <= 0)
         {
-            Debug.Log($"[TurnManager] {CurrentCombatant.characterName} has no AP—ending turn.");
+            Debug.Log($"[TurnManager] {CurrentCombatant.name} has no AP—ending turn.");
             EndCurrentTurn();
             return;
         }
@@ -41,7 +41,7 @@ public class TurnManager : MonoBehaviour
         // 2) Player pressed Space to end their turn early
         if (CurrentCombatant.IsPlayerControlled && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log($"[TurnManager] Player pressed Space—ending {CurrentCombatant.characterName}’s turn.");
+            Debug.Log($"[TurnManager] Player pressed Space—ending {CurrentCombatant.name}’s turn.");
             EndCurrentTurn();
             return;
         }
@@ -61,6 +61,11 @@ public class TurnManager : MonoBehaviour
             .OrderByDescending(c => c.Initiative)
             .ToList();
 
+        foreach (var combatant in combatants)
+        {
+            UIManager.Instance.AddCharToTurnOrder(combatant.name);
+        }
+
         if (!combatants.Any())
         {
             Debug.LogError("[TurnManager] No valid (active and alive) combatants to start combat with!");
@@ -70,6 +75,7 @@ public class TurnManager : MonoBehaviour
 
         isCombatActive = true;
         currentCombatantIndex = -1;
+        combatants[0].IsMyTurn = true;
         // NextTurn();
     }
 
@@ -97,7 +103,7 @@ public class TurnManager : MonoBehaviour
         // Skip dead or inactive combatants
         while (combatants[currentCombatantIndex] == null || !combatants[currentCombatantIndex].gameObject.activeInHierarchy || combatants[currentCombatantIndex].CurrentHealth <= 0)
         {
-            Debug.Log($"[TurnManager] Skipping dead/inactive combatant: {combatants[currentCombatantIndex]?.characterName ?? "NULL_OR_DESTROYED"}. Removing from turn order.");
+            Debug.Log($"[TurnManager] Skipping dead/inactive combatant: {combatants[currentCombatantIndex]?.name ?? "NULL_OR_DESTROYED"}. Removing from turn order.");
             combatants.RemoveAt(currentCombatantIndex);
 
             if (!combatants.Any()) // If list becomes empty
@@ -133,13 +139,13 @@ public class TurnManager : MonoBehaviour
         // Now currentCombatantIndex should point to a valid, active, alive combatant
         combatants[currentCombatantIndex].StartTurn();
         OnTurnChanged?.Invoke(CurrentCombatant);
-        Debug.Log($"[TurnManager] Next turn: {CurrentCombatant.characterName} (Index: {currentCombatantIndex})");
+        Debug.Log($"[TurnManager] Next turn: {CurrentCombatant.name} (Index: {currentCombatantIndex})");
     }
 
     public void EndCurrentTurn()
     {
         if (!isCombatActive || CurrentCombatant == null) return;
-        Debug.Log($"[TurnManager] {CurrentCombatant.characterName} officially ended their turn via EndCurrentTurn().");
+        Debug.Log($"[TurnManager] {CurrentCombatant.name} officially ended their turn via EndCurrentTurn().");
         NextTurn();
     }
 
@@ -152,7 +158,7 @@ public class TurnManager : MonoBehaviour
 
         if (combatants.Remove(combatantToRemove))
         {
-            Debug.Log($"[TurnManager] Character {combatantToRemove.characterName} removed from turn order (e.g. died).");
+            Debug.Log($"[TurnManager] Character {combatantToRemove.name} removed from turn order (e.g. died).");
             if (wasCurrentTurn)
             {
                 currentCombatantIndex--;

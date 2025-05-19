@@ -19,10 +19,11 @@ public class UIManager : MonoBehaviour
     public Slider thirstSlider;
 
 
-    [Header("Log")]
+    [Header("Logs")]
     public TMP_Text logText;
     [SerializeField] private ScrollRect logScrollRect;
     [SerializeField] private RectTransform logContent;
+    public TMP_Text turnOrderList;
 
     [Header("Buttons")]
     public Button moveButton;
@@ -67,39 +68,36 @@ public class UIManager : MonoBehaviour
             canvasRoot = GameObject.FindGameObjectWithTag("GameUI")?.GetComponent<RectTransform>();
         }
 
-        HideEnemyTooltip(); // hide at startup
+        HideEnemyTooltip();
+        turnOrderList.text = "Combat order\n";
     }
 
-    public void UpdateVitals(int hp, int ap, int hunger, int thirst)
+    public void UpdatePlayerVitals()
     {
-        // Optional: Still show text if you want
-        if (hpText != null) hpText.text = $"HP: {hp}";
-        if (hungerText != null) hungerText.text = $"Hunger: {hunger}";
-        if (thirstText != null) thirstText.text = $"Thirst: {thirst}";
+        Character player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<Character>();
 
-        // Update slider values based on stats
-        /* if (GameManager.Instance.player != null)
-        {
-            var stats = GameManager.Instance.player.Stats;
+        if (hpText != null)
+            hpText.text = $"Health Points: {player.CurrentHealth}/{player.MaxHealth}";
 
-            healthSlider.maxValue = stats.MaxHP;
-            healthSlider.value = Mathf.Clamp(hp, 0, stats.MaxHP);
+        if (hungerText != null)
+            hungerText.text = $"Hunger: {player.Hunger}/{player.MaxHunger}";
 
-            hungerSlider.maxValue = stats.MaxHunger;
-            hungerSlider.value = Mathf.Clamp(hunger, 0, stats.MaxHunger);
+        if (thirstText != null)
+            thirstText.text = $"Thirst: {player.Thirst}/{player.MaxThirst}";
 
-            thirstSlider.maxValue = stats.MaxThirst;
-            thirstSlider.value = Mathf.Clamp(thirst, 0, stats.MaxThirst);
-        } */
-
-        apText.text = $"AP: {ap}"; // You can also use a slider here if desired
+        if (apText != null)
+            apText.text = $"Action Points: {player.CurrentActionPoints}/{player.MaxActionPoints}";
     }
-
 
     public void AddLog(string message)
     {
         logText.text += message + "\n";
         StartCoroutine(ScrollToBottom());
+    }
+
+    public void AddCharToTurnOrder(string character)
+    {
+        turnOrderList.text += character + "\n";
     }
 
     private IEnumerator ScrollToBottom()

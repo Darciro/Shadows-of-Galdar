@@ -28,6 +28,8 @@ public class CharacterStats : MonoBehaviour
     public int MaxThirst = 100;
     public int Thirst = 100;
 
+    public bool IsDead = false;
+
     // Initiative = Dexterity + 1d10
     public int Initiative { get; private set; }
 
@@ -35,31 +37,23 @@ public class CharacterStats : MonoBehaviour
     {
         MaxHealth = Constitution * 5;
         CurrentHealth = MaxHealth;
+        CurrentActionPoints = MaxActionPoints;
         Hunger = MaxHunger;
         Thirst = MaxThirst;
     }
 
-    /* public void SetCharacterStats()
+    public virtual void TakeDamage(int amount)
     {
-        MaxHealth = Constitution * 5;
-        CurrentHealth = MaxHealth;
-    } */
+        CurrentHealth -= amount;
+        if (CurrentHealth <= 0f)
+        {
+            IsDead = true;
+        }
+    }
 
-    /* public void CalculateStatsFromAttributes(CharacterAttributes attributes)
+    public void RollInitiative()
     {
-        MaxHealth = attributes.Constitution * 5;
-        CurrentHealth = MaxHealth;
-
-        MaxActionPoints = 3 + (attributes.Dexterity / 10);
-        CurrentActionPoints = MaxActionPoints;
-
-        // Initiative is calculated later at the start of combat
-        Initiative = 0;
-    } */
-
-    public void RollInitiative(int dexterity)
-    {
-        Initiative = dexterity + Random.Range(1, 11); // 1 to 10 inclusive
+        Initiative = Dexterity + Random.Range(1, 11); // 1 to 10 inclusive
     }
 
     public void RestoreAP()
