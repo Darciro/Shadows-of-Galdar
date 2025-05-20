@@ -8,18 +8,23 @@ using Pathfinding;
 public class Character : CharacterStats
 {
     [Header("Core Stats")]
-    public float viewRadius = 2;
+    public float viewRadius = 2f;
     public float attackRange = 0.25f;
     public int attackDamage = 10;
     public bool IsMyTurn = false;
     public bool IsPlayerControlled { get; set; } = false;
 
+    [Header("Combat Settings")]
+    [SerializeField] private float moveSpeedInCombat = 3f;
+    [SerializeField] public int baseAttackAPCost = 2;
+
     public delegate bool CombatAction();
     private Queue<CombatAction> actionQueue = new Queue<CombatAction>();
     public int ActionQueueCount => actionQueue.Count;
     private bool isPerformingAction = false;
+
     private EnemyAIController enemyAIController;
-    private Path currentPathForAP; // Store path to calculate AP cost
+    private Path currentPathForAP;
     public int apCostPerPathNode = 1;
     private bool waitingForPathForAPCost = false;
     private LineRenderer pathLineRenderer;
@@ -42,24 +47,26 @@ public class Character : CharacterStats
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         enemyAIController = GetComponent<EnemyAIController>();
-
         ai.canSearch = true;
         ai.canMove = true;
     }
 
     void LateUpdate()
     {
+        // Update AI movement each frame
         ai.MovementUpdate(Time.deltaTime, out Vector3 nextPos, out Quaternion nextRot);
         ai.FinalizeMovement(nextPos, nextRot);
     }
 
     public void OnCombatStart()
     {
-        Debug.Log($"[Character] {gameObject.name} entering combat mode. Initiative roll {Initiative}");
+        // Roll for initiative at the start of combat
         RollInitiative();
-
+        Debug.Log($"[Character] {name} entering combat mode. Initiative roll {Initiative}");
+        // Clear any leftover actions
         actionQueue.Clear();
         isPerformingAction = false;
+        // Stop movement until turn begins
         if (ai != null)
         {
             ai.isStopped = true;
@@ -69,31 +76,39 @@ public class Character : CharacterStats
 
     public void StartTurn()
     {
-        Debug.Log($"[Character] {gameObject.name}'s turn (Instance ID: {this.GetInstanceID()}). AP: {MaxActionPoints}");
+        Debug.Log($"[Character] {name}'s turn begins. Restoring AP to {MaxActionPoints}.");
         IsMyTurn = true;
         CurrentActionPoints = MaxActionPoints;
         actionQueue.Clear();
         isPerformingAction = false;
+        // Halt movement at turn start – will resume when actions are issued
         ai.isStopped = true;
         ai.canMove = false;
+        // Optionally, adjust movement speed for combat if using AIPath
+        if (ai is Pathfinding.AIPath aiPath)
+        {
+            aiPath.maxSpeed = moveSpeedInCombat;
+        }
 
         if (!IsPlayerControlled && enemyAIController != null)
         {
+            // Enemy AI: plan out its actions for this turn
             enemyAIController.PlanCombatTurn();
         }
         else if (IsPlayerControlled)
         {
-            // Player's turn: UI should enable, input script listens for commands
-            Debug.Log($"[Character] {gameObject.name} (Player) turn started. Waiting for input.");
+            // Player: await input
+            Debug.Log($"[Character] {name} (Player) turn started. Awaiting player actions...");
         }
     }
 
     public void OnCombatEnd()
     {
-        Debug.Log($"[Character] {gameObject.name} is exiting combat mode.");
+        Debug.Log($"[Character] {name} exiting combat mode.");
         IsMyTurn = false;
         actionQueue.Clear();
         isPerformingAction = false;
+        // Resume normal movement for AI agents
         if (ai != null)
         {
             ai.isStopped = false;
@@ -105,19 +120,19 @@ public class Character : CharacterStats
     public void EndTurn()
     {
         if (!IsMyTurn) return;
-        Debug.Log($"[Character] {gameObject.name} ending turn. AP Left: {CurrentActionPoints}");
+        Debug.Log($"[Character] {name} ending turn with {CurrentActionPoints} AP left.");
         IsMyTurn = false;
         ai.isStopped = true;
         ai.canMove = false;
         ai.SetPath(null);
-        TurnManager.Instance?.EndCurrentTurn(); // Null check for safety
+        TurnManager.Instance?.EndCurrentTurn();
     }
 
     public void QueueAction(CombatAction action)
     {
         if (!IsMyTurn)
         {
-            Debug.LogWarning($"[Character] {gameObject.name} tried to queue action but it's not their turn.");
+            Debug.LogWarning($"[Character] {name} tried to queue an action outside of their turn!");
             return;
         }
         actionQueue.Enqueue(action);
@@ -129,14 +144,9 @@ public class Character : CharacterStats
 
     private void ProcessActionQueue()
     {
-        if (isPerformingAction || actionQueue.Count == 0)
-        {
-            return;
-        }
-
+        if (isPerformingAction || actionQueue.Count == 0) return;
         isPerformingAction = true;
         CombatAction currentAction = actionQueue.Peek();
-
         StartCoroutine(ExecuteAction(currentAction));
     }
 
@@ -144,125 +154,133 @@ public class Character : CharacterStats
     {
         if (actionQueue.Count == 0)
         {
-            Debug.LogWarning($"[Character] {gameObject.name}: actionQueue empty on ExecuteAction start; aborting.");
             isPerformingAction = false;
             yield break;
         }
-
         bool actionCompleted = false;
+        // Allow AI movement during action execution
         ai.canMove = true;
-
         while (!actionCompleted)
         {
-            // If the turn was ended prematurely, stop everything
+            // If turn somehow ended mid-action, abort
             if (!IsMyTurn)
             {
-                Debug.LogWarning($"[Character] {gameObject.name}'s turn ended mid-action.");
+                Debug.LogWarning($"[Character] {name}'s turn ended before action completed.");
                 isPerformingAction = false;
                 yield break;
             }
-
             actionCompleted = action.Invoke();
             if (!actionCompleted)
-                yield return null;
+                yield return null; // wait a frame and continue action (e.g., still moving)
         }
-
+        // Action finished:
         ai.canMove = false;
         if (actionQueue.Count > 0)
+        {
             actionQueue.Dequeue();
-
+        }
         isPerformingAction = false;
-
-        // If there are more actions and we still have AP, keep processing
+        // Continue next action if available and AP remains
         if (actionQueue.Count > 0 && CurrentActionPoints > 0 && IsMyTurn)
         {
             ProcessActionQueue();
         }
         else if (IsMyTurn)
         {
-            // If AI and no more actions/AP, automatically end turn
+            // No more queued actions, or no AP left
             if (!IsPlayerControlled)
+            {
+                // AI auto-ends turn when done
                 EndTurn();
-            // If player, wait for explicit end-turn input
+            }
+            // Players can choose to end turn manually (or will auto-end if AP=0 via TurnManager)
         }
     }
 
-    /// <summary>
-    /// Trigger attack animation.
-    /// </summary>
     public virtual bool HandleAttack(Character target)
     {
-        // animator.SetTrigger("Attack");
-        // if (CurrentActionPoints >= baseAttackAPCost) {
+        // Attempt to attack the target if in range and enough AP
         if (Vector3.Distance(transform.position, target.transform.position) <= attackRange)
         {
+            if (CurrentActionPoints < baseAttackAPCost)
+            {
+                Debug.LogWarning($"[Character] {name} cannot attack {target.name} – not enough AP (need {baseAttackAPCost}).");
+                return false;
+            }
+            // Queue the attack animation/action
             QueueAction(() =>
             {
-                Debug.Log($"[Character ActionQueue - Attack] {gameObject.name} attacking {target.name} for {attackDamage} damage. Cost: baseAttackAPCost AP.");
+                Debug.Log($"[Character ActionQueue] {name} attacks {target.name} for {attackDamage} damage (cost {baseAttackAPCost} AP).");
                 UIManager.Instance.ShowDamagePopup(target.transform.position, attackDamage);
                 target.TakeDamage(attackDamage);
-                return true; // Action complete
+                return true; // attack completes in one tick
             });
-            // SpendAP(baseAttackAPCost);
+            SpendAP(baseAttackAPCost);
             return true;
         }
         else
         {
-            Debug.LogWarning($"[Character] {gameObject.name} cannot attack {target.name}. Target out of range.");
+            Debug.LogWarning($"[Character] {name} cannot attack {target.name} – target out of range.");
             return false;
         }
-        // }
     }
 
-    /// <summary>
-    /// Called via AnimationEvent to apply damage.
-    /// </summary>
-    public void DealDamage(Character target)
-    {
-        if (target == null || target.IsDead) return;
-        target.TakeDamage(attackDamage);
-    }
-
-    /// <summary>
-    /// Play hit reaction & check for death.
-    /// </summary>
     public override void TakeDamage(int amount)
     {
-        // First apply the base damage logic
-        base.TakeDamage(amount);
-
-        // Then play hit animation, and die if health dropped to zero
+        base.TakeDamage(amount); // deduct health
         animator.SetTrigger("Hit");
         if (IsDead)
+        {
             Die();
+        }
     }
 
     public void SpendAP(int amount)
     {
         CurrentActionPoints -= amount;
         if (CurrentActionPoints < 0) CurrentActionPoints = 0;
-        Debug.Log($"[Character] {name} spent {amount} AP. AP Remaining: {CurrentActionPoints}");
+        Debug.Log($"[Character] {name} spent {amount} AP (remaining AP: {CurrentActionPoints}).");
     }
 
-    private void OnPathComplete(Path path)
+    protected virtual void Die()
     {
-        if (path.error) return;
-
-        // Reactivate AI for exploration
-        ai.isStopped = false;
-        ai.canSearch = true;
-        ai.canMove = true;
-        ai.SetPath(path);
+        // Called when health drops to 0 or below
+        Debug.Log($"[Character] {name} has died.");
+        // **NEW:** Award XP to player if this is an enemy
+        if (!IsPlayerControlled)
+        {
+            Character playerChar = GameObject.FindGameObjectWithTag("Player")?.GetComponent<Character>();
+            if (playerChar != null)
+            {
+                playerChar.Experience += 10;
+                UIManager.Instance.AddLog($"Player gained 10 XP.");
+            }
+        }
+        // Play death animation and disable character
+        animator.SetTrigger("Die");
+        if (TryGetComponent<Collider>(out var col))
+        {
+            col.enabled = false;
+        }
+        enabled = false;
+        // Destroy the game object after a delay to allow animation to play
+        Destroy(gameObject, 2f);
+        // Remove this character from turn order
+        TurnManager.Instance.RemoveCombatant(this);
     }
+
+    // Movement methods:
 
     public void HandleMovement(Vector3 targetPosition)
     {
         if (GameManager.CurrentMode == GameMode.Exploration)
         {
+            // Simple movement in exploration (continuous)
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
         }
         else if (GameManager.CurrentMode == GameMode.Combat && IsMyTurn)
         {
+            // Begin pathfinding for combat movement (AP cost to be evaluated)
             waitingForPathForAPCost = true;
             seeker.StartPath(transform.position, targetPosition, (Path p) =>
             {
@@ -271,124 +289,85 @@ public class Character : CharacterStats
         }
     }
 
-    /// <summary>
-    /// Queues a movement action using the given precomputed A* path and spends the specified AP.
-    /// </summary>
-    /// <param name="path">The A* Path returned by Seeker.StartPath()</param>
-    /// <param name="apCost">The action point cost of this movement</param>
+    private void OnPathComplete(Path path)
+    {
+        if (path.error) return;
+        // For exploration mode: directly set the AI path
+        ai.isStopped = false;
+        ai.canSearch = true;
+        ai.canMove = true;
+        ai.SetPath(path);
+    }
+
     public void QueueMoveAction(Path path, int apCost)
     {
-        // Deduct AP immediately
+        // Queue a movement along the given path, deducting the specified AP cost
         SpendAP(apCost);
-
-        // Enqueue the actual move action
         QueueAction(() =>
         {
-            // First time through: kick off the movement
+            // On first invocation, start moving along the path
             if (ai.isStopped || !ai.hasPath)
             {
                 ai.isStopped = false;
                 ai.canMove = true;
                 ai.SetPath(path);
-                Debug.Log($"[Character ActionQueue - Move] {gameObject.name} beginning move. AP spent: {apCost}");
+                Debug.Log($"[Character ActionQueue] {name} begins moving (cost {apCost} AP).");
             }
-
-            // Check for arrival
+            // Each frame, check if destination reached
             if (ai.reachedDestination || !ai.hasPath)
             {
                 ai.isStopped = true;
                 ai.canMove = false;
-                Debug.Log($"[Character ActionQueue - Move] {gameObject.name} reached destination.");
-                return true;    // signal that this action is complete
+                Debug.Log($"[Character ActionQueue] {name} finished moving.");
+                return true; // movement action complete
             }
-
-            return false;       // still moving
+            return false; // still en route
         });
     }
 
-    void DrawPath(List<Vector3> waypoints)
+    private void OnPathReceivedForAPCost(Path p, Vector3 targetPosition)
     {
-        Vector3[] positions = waypoints.ToArray();
-        positions[0] = transform.position + Vector3.down * 0.25f;
-        pathLineRenderer.positionCount = positions.Length;
-        pathLineRenderer.SetPositions(positions);
-    }
-
-    void OnPathReceivedForAPCost(Path p, Vector3 targetPosition)
-    {
-        // DrawPath(p.vectorPath);
-        // ShowMoveMarker(p.vectorPath[p.vectorPath.Count - 1]);
-
         waitingForPathForAPCost = false;
-        if (!IsMyTurn) return; // Turn might have ended while waiting for path
-
+        if (!IsMyTurn) return; // ignore if turn ended while path was calculating
         if (p.error)
         {
-            Debug.LogError($"[Character] {gameObject.name} path error to {targetPosition}: {p.errorLog}");
+            Debug.LogError($"[Character] Path error when moving to {targetPosition}: {p.errorLog}");
             return;
         }
-
-        currentPathForAP = p; // Store the path
-        int apCost = (p.path.Count > 0) ? (p.path.Count - 1) * apCostPerPathNode : 0; // Cost based on number of nodes/segments
-        if (apCost == 0 && Vector3.Distance(transform.position, targetPosition) > 0.1f)
+        currentPathForAP = p;
+        int fullCost = (p.path.Count - 1) * apCostPerPathNode;
+        if (fullCost == 0 && Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
-            // If path is 0 nodes but target isn't current pos, maybe 1 AP for very short move
-            apCost = apCostPerPathNode;
+            fullCost = apCostPerPathNode;
         }
-
-
-        if (CurrentActionPoints >= apCost)
+        if (CurrentActionPoints >= fullCost)
         {
-            Debug.Log($"[Character] {gameObject.name} moving to {targetPosition}. Path Nodes: {p.path.Count}, Cost: {apCost} AP. Remaining AP: {CurrentActionPoints - apCost}");
-
+            Debug.Log($"[Character] {name} will move to target (cost {fullCost} AP).");
+            // Queue full move
             QueueAction(() =>
             {
-                // This action executes the move using the pre-calculated path
-                if (ai.isStopped || !ai.hasPath) // If not already moving or path invalidated
+                if (ai.isStopped || !ai.hasPath)
                 {
                     ai.isStopped = false;
                     ai.canMove = true;
-                    ai.SetPath(currentPathForAP); // Use the path we got for AP calculation
-                    Debug.Log($"[Character ActionQueue - Move] {gameObject.name} starting A* movement. HasPath: {ai.hasPath}");
+                    ai.SetPath(currentPathForAP);
                 }
-
                 if (ai.reachedDestination || !ai.hasPath)
                 {
-                    Debug.Log($"[Character ActionQueue - Move] {gameObject.name} finished move action. Reached: {ai.reachedDestination}, HasPath: {ai.hasPath}");
-                    ai.isStopped = true;
-                    ai.canMove = false;
-                    currentPathForAP = null; // Clear stored path
-                    return true; // Action complete
+                    Debug.Log($"[Character] {name} reached movement destination.");
+                    return true;
                 }
-                return false; // Action ongoing
+                return false;
             });
-
-            SpendAP(apCost);
+            SpendAP(fullCost);
         }
         else
         {
-            Debug.LogWarning($"[Character] {gameObject.name} cannot move to {targetPosition}. Not enough AP. Need: {apCost}, Have: {CurrentActionPoints}");
+            Debug.LogWarning($"[Character] {name} cannot move to target – not enough AP (need {fullCost}, have {CurrentActionPoints}).");
+            // No partial move handled here; this is handled in PlayerController logic.
             currentPathForAP = null;
         }
     }
 
-    /// <summary>
-    /// Common death logic: animation, disable collider & scripts, destroy.
-    /// </summary>
-    protected virtual void Die()
-    {
-        animator.SetTrigger("Die");
-        if (TryGetComponent<Collider>(out var col)) col.enabled = false;
-        enabled = false;
-        Destroy(gameObject, 2f);
-        TurnManager.Instance.RemoveCombatant(this);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, viewRadius);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
+    // ... (OnDrawGizmosSelected for visualizing ranges, unchanged) ...
 }

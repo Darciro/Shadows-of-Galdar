@@ -54,89 +54,75 @@ public class TurnManager : MonoBehaviour
             Debug.LogWarning("[TurnManager] StartCombat called while combat is already active.");
             return;
         }
-
         Debug.Log("[TurnManager] Starting new combat sequence.");
         combatants = initialParticipants
             .Where(c => c != null && c.gameObject.activeInHierarchy && c.CurrentHealth > 0)
             .OrderByDescending(c => c.Initiative)
             .ToList();
-
         foreach (var combatant in combatants)
         {
             UIManager.Instance.AddCharToTurnOrder(combatant.name);
         }
-
         if (!combatants.Any())
         {
-            Debug.LogError("[TurnManager] No valid (active and alive) combatants to start combat with!");
+            Debug.LogError("[TurnManager] No valid combatants to start combat with!");
             GameManager.Instance.OnEndCombat();
             return;
         }
-
         isCombatActive = true;
         currentCombatantIndex = -1;
-        combatants[0].IsMyTurn = true;
+        // **Removed**: no need to pre-set IsMyTurn here
         NextTurn();
     }
 
     public void NextTurn()
     {
         if (!isCombatActive) return;
-
         if (CurrentCombatant != null)
         {
             CurrentCombatant.IsMyTurn = false;
         }
-
         if (CheckCombatEndCondition())
         {
-            return;
+            return; // Combat might end here
         }
-
         currentCombatantIndex++;
         if (currentCombatantIndex >= combatants.Count)
         {
             currentCombatantIndex = 0;
             Debug.Log("[TurnManager] New round started.");
         }
-
-        // Skip dead or inactive combatants
-        while (combatants[currentCombatantIndex] == null || !combatants[currentCombatantIndex].gameObject.activeInHierarchy || combatants[currentCombatantIndex].CurrentHealth <= 0)
+        // Skip any dead or inactive combatants
+        while (combatants.Count > 0 &&
+               (combatants[currentCombatantIndex] == null ||
+                !combatants[currentCombatantIndex].gameObject.activeInHierarchy ||
+                combatants[currentCombatantIndex].CurrentHealth <= 0))
         {
             Debug.Log($"[TurnManager] Skipping dead/inactive combatant: {combatants[currentCombatantIndex]?.name ?? "NULL_OR_DESTROYED"}. Removing from turn order.");
             combatants.RemoveAt(currentCombatantIndex);
-
-            if (!combatants.Any()) // If list becomes empty
+            if (!combatants.Any())
             {
-                if (!CheckCombatEndCondition()) // Re-check, should trigger end.
+                if (!CheckCombatEndCondition())
                 {
-                    Debug.LogWarning("[TurnManager] All combatants removed or dead, but combat end not triggered. Forcing end.");
+                    Debug.LogWarning("[TurnManager] All combatants removed or dead, forcing combat end.");
                     GameManager.Instance.OnEndCombat();
                 }
                 return;
             }
-            // Adjust index: if we removed an element, the next element is now at currentCombatantIndex.
-            // So, if currentCombatantIndex was valid before removal, it might be out of bounds or pointing to the wrong next element.
-            // Easiest is to reset to 0 if it goes out of bounds, or just let the loop condition handle it.
             if (currentCombatantIndex >= combatants.Count)
-            {
-                currentCombatantIndex = 0; // Loop back if we removed the last elements
-            }
-            // No need to increment index here as RemoveAt shifts elements. The loop continues.
-            if (!combatants.Any()) break; // Break if list became empty after removal
+                currentCombatantIndex = 0;
         }
-
-        if (!combatants.Any()) // All combatants might have been skipped
+        if (!combatants.Any())
         {
+            // (Additional safety check - if no combatants left, end combat)
             if (!CheckCombatEndCondition())
             {
-                Debug.LogWarning("[TurnManager] No valid combatants left to take a turn. Forcing end.");
+                Debug.LogWarning("[TurnManager] No valid combatants left, forcing combat end.");
                 GameManager.Instance.OnEndCombat();
             }
             return;
         }
-
-        // Now currentCombatantIndex should point to a valid, active, alive combatant
+        // Start the next combatant's turn
         combatants[currentCombatantIndex].StartTurn();
         OnTurnChanged?.Invoke(CurrentCombatant);
         Debug.Log($"[TurnManager] Next turn: {CurrentCombatant.name} (Index: {currentCombatantIndex})");
@@ -145,31 +131,37 @@ public class TurnManager : MonoBehaviour
     public void EndCurrentTurn()
     {
         if (!isCombatActive || CurrentCombatant == null) return;
-        Debug.Log($"[TurnManager] {CurrentCombatant.name} officially ended their turn via EndCurrentTurn().");
+        Debug.Log($"[TurnManager] {CurrentCombatant.name} ended their turn.");
         NextTurn();
     }
 
     public void RemoveCombatant(Character combatantToRemove)
     {
         if (!isCombatActive || combatantToRemove == null) return;
-
         bool wasCurrentTurn = (CurrentCombatant == combatantToRemove);
         int removedIndex = combatants.IndexOf(combatantToRemove);
-
         if (combatants.Remove(combatantToRemove))
         {
-            Debug.Log($"[TurnManager] Character {combatantToRemove.name} removed from turn order (e.g. died).");
+            Debug.Log($"[TurnManager] Removed {combatantToRemove.name} from turn order.");
             if (wasCurrentTurn)
             {
                 currentCombatantIndex--;
-                NextTurn();
+                NextTurn(); // Immediately move to next turn if the active combatant died
             }
             else if (removedIndex != -1 && removedIndex < currentCombatantIndex)
             {
-                currentCombatantIndex--;
+                currentCombatantIndex--; // adjust index if a combatant earlier in list was removed
             }
             CheckCombatEndCondition();
         }
+    }
+
+    public void EndCombat()
+    {
+        // **NEW:** Reset combat state after combat ends
+        isCombatActive = false;
+        combatants.Clear();
+        currentCombatantIndex = -1;
     }
 
     private bool CheckCombatEndCondition()

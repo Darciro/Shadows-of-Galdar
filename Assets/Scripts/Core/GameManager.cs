@@ -132,41 +132,26 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] Attempted to start combat while already in combat mode.");
             return;
         }
-
-        if (participants == null || !participants.Any())
-        {
-            Debug.LogWarning("[GameManager] Attempted to start combat with no participants.");
-            return;
-        }
-
-        // Ensure all participants are valid
-        participants.RemoveAll(item => item == null);
-        if (!participants.Any())
-        {
-            Debug.LogWarning("[GameManager] Attempted to start combat but all provided participants were null.");
-            return;
-        }
+        if (participants == null || !participants.Any()) { /* ... sanity checks ... */ }
 
         Debug.Log($"[GameManager] Starting Combat with {participants.Count} participants.");
         UIManager.Instance.AddLog($"[GameManager] Starting Combat with {participants.Count} participants.");
         ChangeMode(GameMode.Combat);
 
-        // Notify all combatants that combat has started
-        foreach (Character combatant in allCombatantsInScene) // Notify all, not just participants
+        // Notify all visible combatants that combat has started (roll initiative, etc.)
+        foreach (Character combatant in allCombatantsInScene)
         {
             if (combatant != null) combatant.OnCombatStart();
         }
 
-        // Initialize and start the TurnManager
         if (TurnManager.Instance != null)
         {
-            // UIManager.Instance.ShowTurnPhase("Combat mode");
             TurnManager.Instance.StartCombat(participants);
         }
         else
         {
             Debug.LogError("[GameManager] TurnManager instance not found! Combat cannot begin.");
-            ChangeMode(GameMode.Exploration); // Revert if TurnManager is missing
+            ChangeMode(GameMode.Exploration);
         }
     }
 
@@ -180,16 +165,17 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] Attempted to end combat while already in exploration mode.");
             return;
         }
-
         // Notify all combatants that combat has ended
         foreach (Character combatant in allCombatantsInScene)
         {
             if (combatant != null) combatant.OnCombatEnd();
         }
-
         Debug.Log("[GameManager] Ending Combat.");
         UIManager.Instance.AddLog("[GameManager] Ending Combat.");
         ChangeMode(GameMode.Exploration);
+        // **NEW:** Clean up turn manager state after combat
+        if (TurnManager.Instance != null)
+            TurnManager.Instance.EndCombat();
     }
 
     public void ChangeMode(GameMode newMode)

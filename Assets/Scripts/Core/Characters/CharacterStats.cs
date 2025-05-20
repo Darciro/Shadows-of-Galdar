@@ -28,10 +28,14 @@ public class CharacterStats : MonoBehaviour
     public int MaxThirst = 100;
     public int Thirst = 100;
 
-    public bool IsDead = false;
+    public bool IsDead { get; private set; } = false;
 
     // Initiative = Dexterity + 1d10
     public int Initiative { get; private set; }
+
+    [Header("Progression")]
+    public int Experience = 0;
+    public int Level = 1;
 
     protected virtual void Awake()
     {
@@ -45,8 +49,14 @@ public class CharacterStats : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         CurrentHealth -= amount;
-        if (CurrentHealth <= 0f)
+        if (CurrentHealth < 0) CurrentHealth = 0;
+
+        Debug.Log($"[CharacterStats] {name} took {amount} damage (HP: {CurrentHealth}/{MaxHealth}).");
+
+        // Only mark dead when health is zero (and only once)
+        if (CurrentHealth <= 0 && !IsDead)
         {
+            Debug.Log($"[CharacterStats] ... And, is dead!");
             IsDead = true;
         }
     }
