@@ -22,6 +22,7 @@ public class Character : CharacterStats
     private Path currentPathForAP; // Store path to calculate AP cost
     public int apCostPerPathNode = 1;
     private bool waitingForPathForAPCost = false;
+    private LineRenderer pathLineRenderer;
 
     protected Animator animator;
     protected Rigidbody rb;
@@ -33,6 +34,7 @@ public class Character : CharacterStats
         base.Awake();
         ai = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
+        pathLineRenderer = GetComponent<LineRenderer>();
     }
 
     void Start()
@@ -252,7 +254,6 @@ public class Character : CharacterStats
 
     public void HandleMovement(Vector3 targetPosition)
     {
-
         if (GameManager.CurrentMode == GameMode.Exploration)
         {
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
@@ -269,8 +270,19 @@ public class Character : CharacterStats
         }
     }
 
+    void DrawPath(List<Vector3> waypoints)
+    {
+        Vector3[] positions = waypoints.ToArray();
+        positions[0] = transform.position + Vector3.down * 0.25f;
+        pathLineRenderer.positionCount = positions.Length;
+        pathLineRenderer.SetPositions(positions);
+    }
+
     void OnPathReceivedForAPCost(Path p, Vector3 targetPosition)
     {
+        // DrawPath(p.vectorPath);
+        // ShowMoveMarker(p.vectorPath[p.vectorPath.Count - 1]);
+
         waitingForPathForAPCost = false;
         if (!IsMyTurn) return; // Turn might have ended while waiting for path
 

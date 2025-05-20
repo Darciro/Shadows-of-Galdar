@@ -38,65 +38,38 @@ public class PlayerController : MonoBehaviour
         HandleMovementInput();
     }
 
-    private void OnPathComplete(Path path)
-    {
-        if (path.error)
-        {
-            Debug.LogWarning("Path calculation failed: " + path.errorLog);
-            return;
-        }
-        // Assign the path to the AI movement script
-        // ai.SetPath(path);
-        // ai.canSearch = true;
-
-        // DrawPath(path.vectorPath);
-    }
-
-    void DrawPath(List<Vector3> waypoints)
-    {
-        Vector3[] positions = waypoints.ToArray();
-        positions[0] = transform.position + Vector3.down * 0.25f;
-        pathLineRenderer.positionCount = positions.Length;
-        pathLineRenderer.SetPositions(positions);
-    }
-
     private void HandleMovementInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            Plane ground = new Plane(Vector3.forward, new Vector3(0, 0, 0));
-            if (ground.Raycast(ray, out float enter))
+            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
+
+            if (hit.collider != null)
             {
-
-                RaycastHit2D hit = Physics2D.Raycast(cam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (hit.collider != null)
+                Character enemyCombatant = hit.collider.GetComponent<Character>();
+                if (enemyCombatant != null && !enemyCombatant.IsPlayerControlled)
                 {
-                    Character enemyCombatant = hit.collider.GetComponent<Character>();
-                    if (enemyCombatant != null && !enemyCombatant.IsPlayerControlled)
+                    if (GameManager.CurrentMode == GameMode.Exploration)
                     {
-                        if (GameManager.CurrentMode == GameMode.Exploration)
-                        {
-                            if (enableDebugLogging) Debug.Log($"[PlayerController] Clicked on enemy {enemyCombatant.name} in exploration. Requesting combat.");
-                            UIManager.Instance.AddLog($"[PlayerController] Clicked on enemy {enemyCombatant.name} in exploration. Requesting combat.");
-                            GameManager.Instance.RequestCombatStart(playerCharacter, enemyCombatant);
-                        }
-                        else if (GameManager.CurrentMode == GameMode.Combat)
-                        {
-                            if (enableDebugLogging) Debug.Log($"[PlayerController] Clicked on enemy {enemyCombatant.name} in combat. Starting attack");
-                            playerCharacter.HandleAttack(enemyCombatant);
-                        }
-
-                        return;
+                        if (enableDebugLogging) Debug.Log($"[PlayerController] Clicked on enemy {enemyCombatant.name} in exploration. Requesting combat.");
+                        UIManager.Instance.AddLog($"[PlayerController] Clicked on enemy {enemyCombatant.name} in exploration. Requesting combat.");
+                        GameManager.Instance.RequestCombatStart(playerCharacter, enemyCombatant);
                     }
+                    else if (GameManager.CurrentMode == GameMode.Combat)
+                    {
+                        if (enableDebugLogging) Debug.Log($"[PlayerController] Clicked on enemy {enemyCombatant.name} in combat. Starting attack");
+                        playerCharacter.HandleAttack(enemyCombatant);
+                    }
+
+                    return;
                 }
-                else
-                {
-                    if (enableDebugLogging) Debug.Log($"[PlayerController] Player is just moving around.");
-                    UIManager.Instance.AddLog($"[PlayerController] Player is just moving around.");
-                    Vector3 worldPoint = ray.GetPoint(enter);
-                    playerCharacter.HandleMovement(worldPoint);
-                }
+            }
+            else
+            {
+                if (enableDebugLogging) Debug.Log($"[PlayerController] Player is just moving around.");
+                UIManager.Instance.AddLog($"[PlayerController] Player is just moving around.");
+                playerCharacter.HandleMovement(mouseWorldPos);
             }
         }
 
