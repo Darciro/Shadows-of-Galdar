@@ -1,18 +1,17 @@
 using UnityEngine;
 using Pathfinding;
 
-[RequireComponent(typeof(Character))]
-[RequireComponent(typeof(IAstarAI))]
-[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(Character), typeof(IAstarAI), typeof(Seeker))]
 public class EnemyAIController : MonoBehaviour
 {
-    [Header("Patrol Settings")]
+    [Header("Patrol & Chase Settings")]
     public AIState State = AIState.Patrolling;
     public float patrolRadius = 2.5f;
     public float patrolInterval = 3f;
+    public float chaseRadius = 5f;
 
-    [Header("Chase & Attack")]
-    public float chaseRadius = 2;
+    [Header("Debugging")]
+    [SerializeField] private bool enableDebugLogging = false;
 
     private IAstarAI ai;
     private Seeker seeker;
@@ -20,169 +19,161 @@ public class EnemyAIController : MonoBehaviour
     private Transform playerTransform;
     private float patrolTimer;
 
-    [Header("Debugging")]
-    [SerializeField] private bool enableDebugLogging = false;
-
     void Awake()
     {
         ai = GetComponent<IAstarAI>();
         seeker = GetComponent<Seeker>();
         enemyCharacter = GetComponent<Character>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        // Initially halt the AI until paths are assigned or combat starts
+        ai.isStopped = true;
+        ai.canMove = false;
         ai.canSearch = false;
     }
 
     void Update()
     {
-        switch (State)
+        // Exploration mode: patrol or detect player
+        if (GameManager.CurrentMode == GameMode.Exploration)
         {
-            case AIState.Patrolling: DoPatrol(); break;
-            case AIState.Searching: DoChase(); break;
-            case AIState.Attacking: DoAttack(); break;
-        }
-        EvaluateState();
-    }
-
-    private void OnPathComplete(Path path)
-    {
-        if (path.error)
-        {
-            Debug.LogWarning("Path calculation failed: " + path.errorLog);
-            return;
-        }
-        // Assign the path to the AI movement script
-        ai.SetPath(path);
-        ai.canSearch = true;
-    }
-
-    void LateUpdate()
-    {
-        ai.MovementUpdate(Time.deltaTime, out Vector3 nextPos, out Quaternion nextRot);
-        ai.FinalizeMovement(nextPos, nextRot);
-    }
-
-    private void EvaluateState()
-    {
-        float dist = playerTransform != null
-            ? Vector3.Distance(transform.position, playerTransform.position)
-            : Mathf.Infinity;
-
-        if (GameManager.CurrentMode != GameMode.Combat)
-        {
-            /* if (dist <= enemyCharacter.attackRange) State = AIState.Attacking;
-            else if (dist <= chaseRadius) State = AIState.Searching;
-            else State = AIState.Patrolling; */
-
-            if (dist <= chaseRadius)
+            switch (State)
             {
-                State = AIState.Searching;
+                case AIState.Patrolling:
+                    DoPatrol();
+                    break;
+                case AIState.Searching:
+                    DoChase();
+                    break;
             }
-            else
-            {
-                State = AIState.Patrolling;
-            }
-        }
-        else
-        {
-            if (enableDebugLogging) Debug.Log($"[EnemyAIController] The enemy {this.name} is waiting for it's turn to start");
-            // UIManager.Instance.AddLog($"[EnemyAIController] The enemy {this.name} is waiting for it's turn to start");
-            State = AIState.Idle;
+            EvaluateState();
         }
     }
 
     private void DoPatrol()
     {
         patrolTimer += Time.deltaTime;
-        if (patrolTimer >= patrolInterval)
-        {
-            Vector3 rnd = transform.position + Random.insideUnitSphere * patrolRadius;
-            rnd.y = transform.position.y;
-            seeker.StartPath(transform.position, rnd, OnPathComplete);
-            ai.canSearch = true;
-            patrolTimer = 0f;
-        }
+        if (patrolTimer < patrolInterval)
+            return;
+
+        patrolTimer = 0f;
+        Vector2 randomPoint = (Vector2)transform.position + Random.insideUnitCircle * patrolRadius;
+        seeker.StartPath(transform.position, randomPoint, OnPathComplete);
     }
 
     private void DoChase()
     {
-        if (playerTransform == null) return;
+        if (playerTransform == null)
+            return;
 
-        if (enableDebugLogging) Debug.Log($"[EnemyAIController] The enemy {this.name} has saw the player and will request combat.");
-        UIManager.Instance.AddLog($"[EnemyAIController] The enemy {this.name} has saw the player and will request combat.");
+        // Upon seeing the player, initiate combat
+        if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} spotted player; requesting combat.");
+        UIManager.Instance.AddLog($"[EnemyAIController] {name} spotted player; requesting combat.");
 
         Character playerCombatant = playerTransform.GetComponent<Character>();
         if (playerCombatant != null)
         {
             GameManager.Instance.RequestCombatStart(enemyCharacter, playerCombatant);
         }
-
-        // PlanCombatTurn();
-
-        // seeker.StartPath(transform.position, playerTransform.position, OnPathComplete);
-        // ai.canSearch = true;
     }
 
+    private void OnPathComplete(Path path)
+    {
+        if (path.error)
+        {
+            Debug.LogWarning($"[EnemyAIController] Path error: {path.errorLog}");
+            return;
+        }
+
+        ai.canSearch = true;
+        ai.canMove = true;
+        ai.isStopped = false;
+        ai.SetPath(path);
+    }
+
+    private void EvaluateState()
+    {
+        if (playerTransform == null)
+        {
+            State = AIState.Patrolling;
+            return;
+        }
+
+        float dist = Vector2.Distance(transform.position, playerTransform.position);
+        State = (dist <= chaseRadius) ? AIState.Searching : AIState.Patrolling;
+    }
+
+    /// <summary>
+    /// Called at the start of this enemy's combat turn.
+    /// Queues either an attack or a movement action (and ends turn if no valid actions).
+    /// </summary>
     public void PlanCombatTurn()
     {
-        if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} (Combatant: {enemyCharacter.name}) planning combat turn. AP: {enemyCharacter.CurrentActionPoints}");
+        if (enableDebugLogging)
+            Debug.Log($"[EnemyAIController] {name} planning combat turn. AP: {enemyCharacter.CurrentActionPoints}");
+
+        // Ensure we have a player target
         if (playerTransform == null)
         {
             enemyCharacter.EndTurn();
             return;
         }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         Character playerCombatant = playerTransform.GetComponent<Character>();
-
         if (playerCombatant == null || playerCombatant.CurrentHealth <= 0)
         {
-            if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name}: Player target is null or dead. Ending turn.");
             enemyCharacter.EndTurn();
             return;
         }
 
-        // if (distanceToPlayer <= enemyCharacter.attackRange && enemyCharacter.CurrentActionPoints >= enemyCharacter.baseAttackAPCost)
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+
+        // 1) If in attack range, queue attack and done
         if (distanceToPlayer <= enemyCharacter.attackRange)
         {
-            if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} attempting to attack player.");
+            if (enableDebugLogging)
+                Debug.Log($"[EnemyAIController] {name} attacking player.");
+
             enemyCharacter.HandleAttack(playerCombatant);
             return;
         }
 
-        int apForShortMove = 2; // Example: cost for moving a couple of nodes
-        if (distanceToPlayer > enemyCharacter.attackRange && enemyCharacter.CurrentActionPoints >= apForShortMove)
+        // 2) Otherwise, plan a movement action
+        int apPerNode = enemyCharacter.apCostPerPathNode;
+        int availableAP = enemyCharacter.CurrentActionPoints;
+
+        // Move target just outside attack range
+        Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+        Vector2 moveTarget = (Vector2)playerTransform.position - dir * (enemyCharacter.attackRange * 0.8f);
+
+        seeker.StartPath(transform.position, moveTarget, (Path p) =>
         {
-            if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} player out of range, attempting to move closer.");
-            Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-            Vector3 targetMovePos = playerTransform.position - directionToPlayer * (enemyCharacter.attackRange * 0.8f);
+            if (p.error)
+            {
+                Debug.LogWarning($"[EnemyAIController] Combat path error: {p.errorLog}");
+                enemyCharacter.EndTurn();
+                return;
+            }
 
-            enemyCharacter.HandleMovement(targetMovePos);
-            // Similar to attack, this queues the move. Combatant handles execution.
-            return;
-        }
+            int segments = Mathf.Max(1, p.vectorPath.Count - 1);
+            int cost = segments * apPerNode;
 
-        // 3. If no action was queued (e.g., not enough AP, or already in range but couldn't attack), end turn.
-        // The Combatant's ProcessActionQueue will call EndTurn if it's an AI and the queue is empty.
-        if (enemyCharacter.ActionQueueCount == 0)
-        {
-            if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} has no suitable actions queued or AP. Ending turn.");
-            enemyCharacter.EndTurn();
-        }
-    }
+            if (cost <= availableAP)
+            {
+                if (enableDebugLogging)
+                    Debug.Log($"[EnemyAIController] Queuing move ({segments} nodes, {cost} AP)");
 
-    private void DoAttack()
-    {
-        ai.canSearch = false;
-        transform.rotation = Quaternion.LookRotation((playerTransform.position - transform.position).normalized);
-        // Character player = ;
-        enemyCharacter.HandleAttack(GameObject.FindGameObjectWithTag("Player").GetComponent<Character>());
-    }
+                enemyCharacter.QueueMoveAction(p, cost);
+            }
+            else
+            {
+                if (enableDebugLogging)
+                    Debug.Log($"[EnemyAIController] Not enough AP ({availableAP}) for move ({cost}). Ending turn.");
 
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, patrolRadius);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, chaseRadius);
+                enemyCharacter.EndTurn();
+            }
+        });
+
+        // Do NOT end turn immediately - wait for the path callback to queue or end
     }
 }

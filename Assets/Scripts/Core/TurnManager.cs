@@ -76,7 +76,7 @@ public class TurnManager : MonoBehaviour
         isCombatActive = true;
         currentCombatantIndex = -1;
         combatants[0].IsMyTurn = true;
-        // NextTurn();
+        NextTurn();
     }
 
     public void NextTurn()

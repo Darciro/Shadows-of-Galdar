@@ -46,6 +46,7 @@ public class UIManager : MonoBehaviour
     public GameObject enemyTooltip;
     public TextMeshProUGUI enemyNameText;
     public TextMeshProUGUI enemyHpText;
+    public TextMeshProUGUI enemyActionPointsText;
     public TextMeshProUGUI enemyDamageText;
 
     [Header("Damage Popup")]
@@ -140,8 +141,9 @@ public class UIManager : MonoBehaviour
         if (enemy == null) return;
 
         enemyNameText.text = enemy.name;
-        enemyHpText.text = $"HP: {enemy.CurrentHealth} / {enemy.MaxHealth}";
-        enemyDamageText.text = $"DMG: {enemy.attackDamage}";
+        enemyHpText.text = $"Health Points: {enemy.CurrentHealth} / {enemy.MaxHealth}";
+        enemyActionPointsText.text = $"Action Points: {enemy.CurrentActionPoints} / {enemy.MaxActionPoints}";
+        enemyDamageText.text = $"Damage: {enemy.attackDamage}";
 
         Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
         screenPos += new Vector2(75, -75);

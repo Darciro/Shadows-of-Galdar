@@ -6558,7 +6558,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -999, y: -999}
   m_SizeDelta: {x: 75, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &175190955
@@ -7389,10 +7389,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1312720602}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -23.333332}
-  m_SizeDelta: {x: 130, y: 26.666664}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &226671518
 CanvasRenderer:
@@ -7425,7 +7425,7 @@ MonoBehaviour:
   m_text: Enemy
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2342627169118993609, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11055,12 +11055,6 @@ MonoBehaviour:
   attackDamage: 10
   IsMyTurn: 0
   apCostPerPathNode: 1
-  apCostTooltip: {fileID: 0}
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  apCostPerNode: 1
-  previewInterval: 0.1
 --- !u!1 &533425477
 GameObject:
   m_ObjectHideFlags: 0
@@ -16635,7 +16629,7 @@ MonoBehaviour:
   m_text: 'Damage: 5 - 9'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2342627169118993609, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -16725,10 +16719,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1312720602}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -76.66666}
-  m_SizeDelta: {x: 130, y: 26.666664}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &791808433
 MonoBehaviour:
@@ -20499,12 +20493,6 @@ MonoBehaviour:
   attackDamage: 10
   IsMyTurn: 0
   apCostPerPathNode: 1
-  apCostTooltip: {fileID: 0}
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  apCostPerNode: 1
-  previewInterval: 0.1
 --- !u!1 &1001528539
 GameObject:
   m_ObjectHideFlags: 0
@@ -23532,7 +23520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1312720602
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24188,10 +24176,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1312720602}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -49.999996}
-  m_SizeDelta: {x: 130, y: 26.666664}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1399347502
 CanvasRenderer:
@@ -24224,7 +24212,7 @@ MonoBehaviour:
   m_text: 'Health Points: 99/99'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2342627169118993609, guid: 5ece7acdeb76bc74792743d201971e9b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -24486,8 +24474,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673332b21f5551645a302bb75591e52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  apCostTooltip: {fileID: 166912976}
+  previewInterval: 0.1
   apCostPerPathNode: 1
-  moveSpeedInCombat: 3
   enableDebugLogging: 1
 --- !u!114 &1425592488
 MonoBehaviour:
@@ -24771,12 +24760,6 @@ MonoBehaviour:
   attackDamage: 30
   IsMyTurn: 0
   apCostPerPathNode: 1
-  apCostTooltip: {fileID: 166912976}
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  apCostPerNode: 1
-  previewInterval: 0.1
 --- !u!120 &1425592497
 LineRenderer:
   serializedVersion: 2

@@ -248,8 +248,11 @@ public class Character : CharacterStats
     {
         if (path.error) return;
 
-        ai.SetPath(path);
+        // Reactivate AI for exploration
+        ai.isStopped = false;
         ai.canSearch = true;
+        ai.canMove = true;
+        ai.SetPath(path);
     }
 
     public void HandleMovement(Vector3 targetPosition)
@@ -258,16 +261,49 @@ public class Character : CharacterStats
         {
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
         }
-        else if (GameManager.CurrentMode == GameMode.Combat)
+        else if (GameManager.CurrentMode == GameMode.Combat && IsMyTurn)
         {
-            if (!IsMyTurn || isPerformingAction || ai == null || seeker == null || waitingForPathForAPCost) return;
-
             waitingForPathForAPCost = true;
             seeker.StartPath(transform.position, targetPosition, (Path p) =>
             {
                 OnPathReceivedForAPCost(p, targetPosition);
             });
         }
+    }
+
+    /// <summary>
+    /// Queues a movement action using the given precomputed A* path and spends the specified AP.
+    /// </summary>
+    /// <param name="path">The A* Path returned by Seeker.StartPath()</param>
+    /// <param name="apCost">The action point cost of this movement</param>
+    public void QueueMoveAction(Path path, int apCost)
+    {
+        // Deduct AP immediately
+        SpendAP(apCost);
+
+        // Enqueue the actual move action
+        QueueAction(() =>
+        {
+            // First time through: kick off the movement
+            if (ai.isStopped || !ai.hasPath)
+            {
+                ai.isStopped = false;
+                ai.canMove = true;
+                ai.SetPath(path);
+                Debug.Log($"[Character ActionQueue - Move] {gameObject.name} beginning move. AP spent: {apCost}");
+            }
+
+            // Check for arrival
+            if (ai.reachedDestination || !ai.hasPath)
+            {
+                ai.isStopped = true;
+                ai.canMove = false;
+                Debug.Log($"[Character ActionQueue - Move] {gameObject.name} reached destination.");
+                return true;    // signal that this action is complete
+            }
+
+            return false;       // still moving
+        });
     }
 
     void DrawPath(List<Vector3> waypoints)
