@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         playerCharacter = GetComponent<Character>();
-        seeker = GetComponent<Seeker>();
+        seeker = playerCharacter.GetComponent<Seeker>();
         cam = Camera.main;
         playerCharacter.IsPlayerControlled = true;
     }
@@ -63,14 +63,12 @@ public class PlayerController : MonoBehaviour
                 // Clicked on an enemy
                 if (GameManager.CurrentMode == GameMode.Exploration)
                 {
-                    if (enableDebugLogging)
-                        Debug.Log($"[PlayerController] RequestCombatStart vs {other.name}");
+                    if (enableDebugLogging) Debug.Log($"[PlayerController] RequestCombatStart vs {other.name}");
                     GameManager.Instance.RequestCombatStart(playerCharacter, other);
                 }
                 else if (GameManager.CurrentMode == GameMode.Combat && playerCharacter.IsMyTurn)
                 {
-                    if (enableDebugLogging)
-                        Debug.Log($"[PlayerController] Attempting attack on {other.name}");
+                    if (enableDebugLogging) Debug.Log($"[PlayerController] Attempting attack on {other.name}");
                     float distance = Vector3.Distance(playerCharacter.transform.position, other.transform.position);
                     if (distance <= playerCharacter.attackRange)
                     {
@@ -98,8 +96,7 @@ public class PlayerController : MonoBehaviour
                             int moveCost = segments * apCostPerPathNode;
                             if (moveCost <= playerCharacter.CurrentActionPoints)
                             {
-                                if (enableDebugLogging)
-                                    Debug.Log($"[PlayerController] Moving into range of {other.name} (cost {moveCost} AP)");
+                                if (enableDebugLogging) Debug.Log($"[PlayerController] Moving into range of {other.name} (cost {moveCost} AP)");
                                 playerCharacter.QueueMoveAction(path, moveCost);
                                 // After moving, attempt attack if we have enough AP left
                                 int remainingAP = playerCharacter.CurrentActionPoints;

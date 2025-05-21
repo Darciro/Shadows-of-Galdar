@@ -113,17 +113,8 @@ public class UIManager : MonoBehaviour
     public void ShowTurnPhase(string message)
     {
         turnsPhaseText.text = message;
-        // StopAllCoroutines();
-        // StartCoroutine(ShowPhaseRoutine(message));
-    }
-
-    public void ShowDamagePopup(Vector3 worldPos, int damage)
-    {
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-        GameObject popup = Instantiate(damagePopupPrefab, canvasRoot);
-        popup.GetComponent<RectTransform>().position = screenPos;
-
-        popup.GetComponent<DamagePopup>().Setup(damage);
+        StopAllCoroutines();
+        StartCoroutine(ShowPhaseRoutine(message));
     }
 
     private IEnumerator ShowPhaseRoutine(string message)
@@ -134,6 +125,15 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(phaseDisplayDelay);
 
         turnsPhaseText.gameObject.SetActive(false);
+    }
+
+    public void ShowDamagePopup(Vector3 worldPos, int damage)
+    {
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        GameObject popup = Instantiate(damagePopupPrefab, canvasRoot);
+        popup.GetComponent<RectTransform>().position = screenPos;
+
+        popup.GetComponent<DamagePopup>().Setup(damage);
     }
 
     public void ShowEnemyTooltip(Character enemy, Vector3 worldPosition)

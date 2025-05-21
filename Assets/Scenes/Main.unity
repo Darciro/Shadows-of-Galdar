@@ -11049,7 +11049,6 @@ MonoBehaviour:
   Hunger: 100
   MaxThirst: 100
   Thirst: 100
-  IsDead: 0
   Experience: 0
   Level: 1
   viewRadius: 10
@@ -20491,7 +20490,6 @@ MonoBehaviour:
   Hunger: 100
   MaxThirst: 100
   Thirst: 100
-  IsDead: 0
   Experience: 0
   Level: 1
   viewRadius: 2
@@ -24763,11 +24761,10 @@ MonoBehaviour:
   Hunger: 100
   MaxThirst: 100
   Thirst: 100
-  IsDead: 1
   Experience: 0
   Level: 1
   viewRadius: 2
-  attackRange: 0.5
+  attackRange: 0.25
   attackDamage: 15
   IsMyTurn: 0
   moveSpeedInCombat: 3

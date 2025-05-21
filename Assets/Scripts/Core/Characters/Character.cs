@@ -114,6 +114,15 @@ public class Character : CharacterStats
             ai.isStopped = false;
             ai.canMove = true;
             ai.SetPath(null);
+
+            if (!IsPlayerControlled && enemyAIController != null)
+            {
+                // Reset enemy AI state to patrolling to prevent immediate re-engagement
+                enemyAIController.State = AIState.Patrolling;
+                // Optionally, you could add a method to enemyAIController to move it
+                // to a new random patrol point if it's too close to the player.
+                // e.g., enemyAIController.StartNewPatrolRoutine();
+            }
         }
     }
 
@@ -369,5 +378,11 @@ public class Character : CharacterStats
         }
     }
 
-    // ... (OnDrawGizmosSelected for visualizing ranges, unchanged) ...
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, viewRadius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }

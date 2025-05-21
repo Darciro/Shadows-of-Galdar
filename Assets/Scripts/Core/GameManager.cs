@@ -17,6 +17,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameMode currentMode;
     public static GameMode CurrentMode { get; private set; } = GameMode.Exploration;
 
+    [Header("Combat Cooldown")]
+    [Tooltip("Seconds to ignore new combat requests after a fight ends.")]
+    [SerializeField] private float combatRestartCooldown = 0.5f;
+    private float lastCombatEndTime = -Mathf.Infinity;
+
     [Header("Debug")]
     public bool ShadowDebugger = false;
 
@@ -92,6 +97,7 @@ public class GameManager : MonoBehaviour
     public void RequestCombatStart(Character initiator, Character target)
     {
         if (currentMode == GameMode.Combat) return;
+        if (Time.time - lastCombatEndTime < combatRestartCooldown) return;
 
         Debug.Log($"[GameManager] Combat requested by {initiator.name} against {target.name}");
         UIManager.Instance.AddLog($"[GameManager] Combat requested by {initiator.name} against {target.name}");
@@ -160,6 +166,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnEndCombat()
     {
+        // Record the timestamp of the battle
+        lastCombatEndTime = Time.time;
+
         if (currentMode == GameMode.Exploration)
         {
             Debug.LogWarning("[GameManager] Attempted to end combat while already in exploration mode.");
@@ -173,9 +182,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GameManager] Ending Combat.");
         UIManager.Instance.AddLog("[GameManager] Ending Combat.");
         ChangeMode(GameMode.Exploration);
-        // **NEW:** Clean up turn manager state after combat
-        if (TurnManager.Instance != null)
-            TurnManager.Instance.EndCombat();
+        TurnManager.Instance.EndCombat();
     }
 
     public void ChangeMode(GameMode newMode)

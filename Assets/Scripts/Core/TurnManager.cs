@@ -5,6 +5,7 @@ using System.Linq;
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
+    private int roundNumber = 0;
 
     private List<Character> combatants = new List<Character>();
     private int currentCombatantIndex = -1;
@@ -71,7 +72,7 @@ public class TurnManager : MonoBehaviour
         }
         isCombatActive = true;
         currentCombatantIndex = -1;
-        // **Removed**: no need to pre-set IsMyTurn here
+        roundNumber = 1;
         NextTurn();
     }
 

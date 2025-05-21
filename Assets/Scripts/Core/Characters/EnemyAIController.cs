@@ -21,9 +21,9 @@ public class EnemyAIController : MonoBehaviour
 
     void Awake()
     {
-        ai = GetComponent<IAstarAI>();
-        seeker = GetComponent<Seeker>();
         enemyCharacter = GetComponent<Character>();
+        ai = enemyCharacter.GetComponent<IAstarAI>();
+        seeker = enemyCharacter.GetComponent<Seeker>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         // Initially halt the AI until paths are assigned or combat starts
@@ -109,8 +109,7 @@ public class EnemyAIController : MonoBehaviour
     /// </summary>
     public void PlanCombatTurn()
     {
-        if (enableDebugLogging)
-            Debug.Log($"[EnemyAIController] {name} planning turn. AP available: {enemyCharacter.CurrentActionPoints}");
+        if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} planning turn. AP available: {enemyCharacter.CurrentActionPoints}");
 
         // If no player or player already dead, end turn
         if (playerTransform == null || playerTransform.GetComponent<Character>() == null || playerTransform.GetComponent<Character>().CurrentHealth <= 0)
@@ -124,8 +123,7 @@ public class EnemyAIController : MonoBehaviour
         if (distanceToPlayer <= enemyCharacter.attackRange)
         {
             // Player is within attack range – perform attack
-            if (enableDebugLogging)
-                Debug.Log($"[EnemyAIController] {name} is in range and will attack the player.");
+            if (enableDebugLogging) Debug.Log($"[EnemyAIController] {name} is in range and will attack the player.");
             enemyCharacter.HandleAttack(playerCombatant);
             return;
         }
@@ -133,9 +131,11 @@ public class EnemyAIController : MonoBehaviour
         // Player is out of range – move closer
         int apPerNode = enemyCharacter.apCostPerPathNode;
         int availableAP = enemyCharacter.CurrentActionPoints;
+
         // Target a point just within attack range of the player
         Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-        Vector2 moveTarget = (Vector2)playerTransform.position - dir * (enemyCharacter.attackRange * 0.8f);
+        float desiredGap = enemyCharacter.attackRange * 0.9f;
+        Vector2 moveTarget = (Vector2)playerTransform.position - dir * desiredGap;
 
         // Find path toward the player (within attack range distance)
         seeker.StartPath(transform.position, moveTarget, (Path p) =>
