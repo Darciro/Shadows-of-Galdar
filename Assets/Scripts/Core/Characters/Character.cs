@@ -15,7 +15,7 @@ public class Character : CharacterStats
     public bool IsPlayerControlled { get; set; } = false;
 
     [Header("Combat Settings")]
-    [SerializeField] private float moveSpeedInCombat = 3f;
+    [SerializeField] private float moveSpeedInCombat = 1f;
     [SerializeField] public int baseAttackAPCost = 2;
 
     public delegate bool CombatAction();

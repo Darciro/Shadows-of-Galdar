@@ -5,5 +5,9 @@ public enum AIState
     Searching,
     Pursuing,
     Attacking,
-    Fleeing
+    Fleeing,
+    // Newly version
+    WaitingForEnemyTurn,
+    TakingTurn,
+    Busy
 }

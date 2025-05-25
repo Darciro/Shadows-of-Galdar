@@ -3032,17 +3032,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1416060355610396149}
     m_Modifications:
+    - target: {fileID: -2273927570511500798, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
+      propertyPath: alwaysDrawGizmos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381928, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_Name
       value: Knight
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.999
+      value: 2.448
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.082
+      value: -0.878
       objectReference: {fileID: 0}
     - target: {fileID: 3986202553696381935, guid: 51978d82e0d473644994fc9eb17a26a6, type: 3}
       propertyPath: m_LocalPosition.z

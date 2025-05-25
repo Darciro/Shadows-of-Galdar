@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
 
         // find every Character in the scene
-        foreach (Character c in FindObjectsOfType<Character>())
+        foreach (Character c in FindObjectsByType<Character>(FindObjectsSortMode.None))
         {
             if (c == null) continue;
 

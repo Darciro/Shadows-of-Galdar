@@ -105,8 +105,8 @@ GameObject:
   - component: {fileID: -2851205627615829531}
   - component: {fileID: 9006059535160270663}
   - component: {fileID: -2273927570511500798}
-  - component: {fileID: 4954292134331764281}
   - component: {fileID: -3923906077218058744}
+  - component: {fileID: 4954292134331764281}
   m_Layer: 8
   m_Name: Knight
   m_TagString: Player
@@ -487,21 +487,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   preventMovingBackwards: 0
   constrainInsideGraph: 0
---- !u!114 &4954292134331764281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3986202553696381928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 673332b21f5551645a302bb75591e52c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  apCostPerPathNode: 1
-  moveSpeedInCombat: 3
-  enableDebugLogging: 0
 --- !u!114 &-3923906077218058744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,12 +513,31 @@ MonoBehaviour:
   Hunger: 100
   MaxThirst: 100
   Thirst: 100
-  IsDead: 0
+  Experience: 0
+  Level: 1
   viewRadius: 2
-  attackRange: 1.5
-  attackDamage: 10
+  attackRange: 0.25
+  attackDamage: 15
   IsMyTurn: 0
+  moveSpeedInCombat: 1
+  baseAttackAPCost: 2
   apCostPerPathNode: 1
+--- !u!114 &4954292134331764281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986202553696381928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 673332b21f5551645a302bb75591e52c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apCostTooltip: {fileID: 0}
+  previewInterval: 0.1
+  apCostPerPathNode: 1
+  enableDebugLogging: 0
 --- !u!1 &6627500356195878703
 GameObject:
   m_ObjectHideFlags: 0
