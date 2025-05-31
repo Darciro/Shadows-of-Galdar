@@ -9,6 +9,11 @@ namespace DungeonMaster
     {
 
         [SerializeField] private Animator animator;
+        // [SerializeField] private Transform bulletProjectilePrefab;
+        // [SerializeField] private Transform shootPointTransform;
+        // [SerializeField] private Transform rifleTransform;
+        // [SerializeField] private Transform swordTransform;
+
 
         private void Awake()
         {
@@ -22,6 +27,29 @@ namespace DungeonMaster
             {
                 shootAction.OnShoot += ShootAction_OnShoot;
             }
+
+            if (TryGetComponent<SwordAction>(out SwordAction swordAction))
+            {
+                swordAction.OnSwordActionStarted += SwordAction_OnSwordActionStarted;
+                swordAction.OnSwordActionCompleted += SwordAction_OnSwordActionCompleted;
+            }
+        }
+
+        private void Start()
+        {
+            EquipRifle();
+        }
+
+        private void SwordAction_OnSwordActionCompleted(object sender, EventArgs e)
+        {
+            EquipRifle();
+        }
+
+        private void SwordAction_OnSwordActionStarted(object sender, EventArgs e)
+        {
+            EquipSword();
+            // animator.SetTrigger("SwordSlash");
+            animator.SetTrigger("Shoot");
         }
 
         private void MoveAction_OnStartMoving(object sender, EventArgs e)
@@ -38,6 +66,21 @@ namespace DungeonMaster
         {
             animator.SetTrigger("Shoot");
         }
+
+        private void EquipSword()
+        {
+            // Debug.Log($"[UnitAnimator] {name} equiped sword");
+            // swordTransform.gameObject.SetActive(true);
+            // rifleTransform.gameObject.SetActive(false);
+        }
+
+        private void EquipRifle()
+        {
+            // Debug.Log($"[UnitAnimator] {name} equiped rifle");
+            // swordTransform.gameObject.SetActive(false);
+            // rifleTransform.gameObject.SetActive(true);
+        }
+
 
     }
 }

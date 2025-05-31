@@ -1,31 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace DungeonMaster
 {
-    public class GridSystem
+    public class GridSystem<TGridObject>
     {
         private int width;
         private int height;
         private float cellSize;
-        private GridObject[,] gridObjectArray;
+        private TGridObject[,] gridObjectArray;
 
-        public GridSystem(int width, int height, float cellSize)
+        public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
         {
             this.width = width;
             this.height = height;
             this.cellSize = cellSize;
 
-            gridObjectArray = new GridObject[width, height];
+            gridObjectArray = new TGridObject[width, height];
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    // Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y) + Vector3.right, Color.white, 1000);
                     GridPosition gridPosition = new GridPosition(x, y);
-                    gridObjectArray[x, y] = new GridObject(this, gridPosition);
+                    gridObjectArray[x, y] = createGridObject(this, gridPosition);
+
                 }
             }
         }
@@ -58,7 +59,7 @@ namespace DungeonMaster
             }
         }
 
-        public GridObject GetGridObject(GridPosition gridPosition)
+        public TGridObject GetGridObject(GridPosition gridPosition)
         {
             return gridObjectArray[gridPosition.x, gridPosition.y];
         }

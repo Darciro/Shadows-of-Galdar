@@ -4,7 +4,7 @@ using System.Linq;
 
 public class TurnManager : MonoBehaviour
 {
-    public static TurnManager Instance { get; private set; }
+    /* public static TurnManager Instance { get; private set; }
     private int roundNumber = 0;
 
     private List<Character> combatants = new List<Character>();
@@ -193,5 +193,5 @@ public class TurnManager : MonoBehaviour
             return true;
         }
         return false;
-    }
+    } */
 }

@@ -127,6 +127,9 @@ GameObject:
   - component: {fileID: -2260249168390723642}
   - component: {fileID: -6625584261647687543}
   - component: {fileID: 4661283913354794053}
+  - component: {fileID: 8675342532198028450}
+  - component: {fileID: 9118378736966057391}
+  - component: {fileID: 106977162786363690}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -210,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11bba7282d6c04e4992503b24ca72ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionPoints: 2
   isEnemy: 0
 --- !u!114 &8741397342633415189
 MonoBehaviour:
@@ -248,6 +252,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742a5d52cfa13eb4b88ca780af0b1a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   maxShootDistance: 4
 --- !u!114 &-2260249168390723642
 MonoBehaviour:
@@ -290,6 +297,43 @@ MonoBehaviour:
   unit: {fileID: 8829441904567637507}
   healthBarImage: {fileID: 4237530856325646574}
   healthSystem: {fileID: -6625584261647687543}
+--- !u!114 &8675342532198028450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3810623771323411527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db7ec5b5d22eed84bbf7a80b7374ded6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grenadeProjectilePrefab: {fileID: 0}
+--- !u!114 &9118378736966057391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3810623771323411527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 613f74897366a4349a71f138f385938e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &106977162786363690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3810623771323411527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9abee22b0ddba9744967e857238de68c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4462994368070755922
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,7 +454,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7094458071866301961
 Transform:
   m_ObjectHideFlags: 0

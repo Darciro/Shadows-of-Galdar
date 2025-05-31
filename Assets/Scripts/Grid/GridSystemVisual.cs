@@ -96,6 +96,28 @@ namespace DungeonMaster
             ShowGridPositionList(gridPositionList, gridVisualType);
         }
 
+        private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+        {
+            List<GridPosition> gridPositionList = new List<GridPosition>();
+
+            for (int x = -range; x <= range; x++)
+            {
+                for (int y = -range; y <= range; y++)
+                {
+                    GridPosition testGridPosition = gridPosition + new GridPosition(x, y);
+
+                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    gridPositionList.Add(testGridPosition);
+                }
+            }
+
+            ShowGridPositionList(gridPositionList, gridVisualType);
+        }
+
         public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
         {
             foreach (GridPosition gridPosition in gridPositionList)
@@ -125,9 +147,19 @@ namespace DungeonMaster
                     break;
                 case ShootAction shootAction:
                     gridVisualType = GridVisualType.Red;
-
                     ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                     break;
+                case GrenadeAction grenadeAction:
+                    gridVisualType = GridVisualType.Yellow;
+                    break;
+                case SwordAction swordAction:
+                    gridVisualType = GridVisualType.Red;
+                    ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetMaxSwordDistance(), GridVisualType.RedSoft);
+                    break;
+                case InteractAction interactAction:
+                    gridVisualType = GridVisualType.Blue;
+                    break;
+
             }
 
             if (selectedAction != null)

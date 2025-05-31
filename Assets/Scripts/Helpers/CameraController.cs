@@ -22,12 +22,7 @@ namespace DungeonMaster
 
         private void HandleMovement()
         {
-            Vector2 inputMoveDir = Vector2.zero;
-
-            if (Input.GetKey(KeyCode.W)) inputMoveDir.y += 1f;
-            if (Input.GetKey(KeyCode.S)) inputMoveDir.y -= 1f;
-            if (Input.GetKey(KeyCode.A)) inputMoveDir.x -= 1f;
-            if (Input.GetKey(KeyCode.D)) inputMoveDir.x += 1f;
+            Vector2 inputMoveDir = InputManager.Instance.GetCameraMoveVector();
 
             Vector3 move = new Vector3(inputMoveDir.x, inputMoveDir.y, 0f) * moveSpeed * Time.deltaTime;
             transform.position += move;
@@ -37,10 +32,10 @@ namespace DungeonMaster
         {
             float scrollInput = Input.mouseScrollDelta.y;
 
-            if (scrollInput != 0f)
+            if (InputManager.Instance.GetCameraZoomAmount() != 0f)
             {
                 float currentZoom = cineCam.Lens.OrthographicSize;
-                currentZoom -= scrollInput * zoomSpeed * Time.deltaTime;
+                currentZoom -= InputManager.Instance.GetCameraZoomAmount() * zoomSpeed * Time.deltaTime;
                 currentZoom = Mathf.Clamp(currentZoom, MIN_ORTHO_SIZE, MAX_ORTHO_SIZE);
                 cineCam.Lens.OrthographicSize = currentZoom;
             }

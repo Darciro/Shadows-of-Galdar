@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SceneTransition : MonoBehaviour
 {
-    public static SceneTransition Instance { get; private set; }
+    /* public static SceneTransition Instance { get; private set; }
     [SerializeField] private Animator _transitionAnim;
 
     public void StartTransition()
@@ -18,5 +18,5 @@ public class SceneTransition : MonoBehaviour
         _transitionAnim.SetTrigger("End");
         yield return new WaitForSeconds(1);
         _transitionAnim.SetTrigger("Start");
-    }
+    } */
 }

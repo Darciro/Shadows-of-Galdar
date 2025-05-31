@@ -17,13 +17,13 @@ namespace DungeonMaster
 
         private void Update()
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.Instance.GetMouseScreenPosition());
             transform.position = mousePos;
         }
 
         public static Vector2 GetPosition()
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.Instance.GetMouseScreenPosition());
             RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, float.MaxValue, instance.mousePlaneLayerMask);
             return hit.point;
         }

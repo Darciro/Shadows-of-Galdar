@@ -15,15 +15,20 @@ namespace DungeonMaster
         public event EventHandler OnSelectedActionChanged;
         public event EventHandler<bool> OnBusyChanged;
         public event EventHandler OnActionStarted;
+
+
         [SerializeField] private Unit selectedUnit;
         [SerializeField] private LayerMask unitLayerMask;
+
         private BaseAction selectedAction;
         private bool isBusy;
+
 
         private void Awake()
         {
             if (Instance != null)
             {
+                Debug.LogError("There's more than one UnitActionSystem! " + transform + " - " + Instance);
                 Destroy(gameObject);
                 return;
             }
@@ -62,7 +67,7 @@ namespace DungeonMaster
 
         private void HandleSelectedAction()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (InputManager.Instance.IsMouseButtonDownThisFrame())
             {
                 GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
@@ -81,28 +86,28 @@ namespace DungeonMaster
 
                 OnActionStarted?.Invoke(this, EventArgs.Empty);
             }
-
         }
 
 
         private void SetBusy()
         {
             isBusy = true;
+
             OnBusyChanged?.Invoke(this, isBusy);
         }
 
         private void ClearBusy()
         {
             isBusy = false;
+
             OnBusyChanged?.Invoke(this, isBusy);
         }
 
-
         private bool TryHandleUnitSelection()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (InputManager.Instance.IsMouseButtonDownThisFrame())
             {
-                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.Instance.GetMouseScreenPosition());
                 RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, float.MaxValue, unitLayerMask);
 
                 if (hit.collider != null)
@@ -111,7 +116,6 @@ namespace DungeonMaster
                     {
                         if (unit.IsEnemy())
                         {
-                            Debug.Log($"[UnitActionSystem] Enemy: {unit.name}");
                             return false;
                         }
 
@@ -133,13 +137,16 @@ namespace DungeonMaster
         private void SetSelectedUnit(Unit unit)
         {
             selectedUnit = unit;
+
             SetSelectedAction(unit.GetAction<MoveAction>());
+
             OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetSelectedAction(BaseAction baseAction)
         {
             selectedAction = baseAction;
+
             OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -152,7 +159,5 @@ namespace DungeonMaster
         {
             return selectedAction;
         }
-
-
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.Localization.Settings;
 
 public class DungeonMasterBook : MonoBehaviour
 {
-    public static DungeonMasterBook Instance { get; private set; }
+    /* public static DungeonMasterBook Instance { get; private set; }
     [SerializeField] private LocalizedString bookContent;
     [Space][SerializeField] private TMP_Text leftSide;
     [SerializeField] private TMP_Text rightSide;
@@ -118,5 +118,5 @@ public class DungeonMasterBook : MonoBehaviour
         yield return new WaitForSeconds(1);
         gameObject.SetActive(false);
         Debug.Log("[DungeonMasterBook] Book ended!");
-    }
+    } */
 }

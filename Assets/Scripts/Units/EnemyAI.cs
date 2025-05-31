@@ -35,11 +35,9 @@ namespace DungeonMaster
                     timer -= Time.deltaTime;
                     if (timer <= 0f)
                     {
-                        Debug.Log($"[EnemyAI] AIState.TakingTurn");
                         if (TryTakeEnemyAIAction(SetStateTakingTurn))
                         {
                             state = AIState.Busy;
-                            Debug.Log($"[EnemyAI] Enemy is busy");
                         }
                         else
                         {
@@ -71,10 +69,8 @@ namespace DungeonMaster
 
         private bool TryTakeEnemyAIAction(Action onEnemyAIActionComplete)
         {
-            Debug.Log($"[EnemyAI] Enemy Try Take Enemy AIAction. Enemy list {UnitManager.Instance.GetEnemyUnitList()}");
             foreach (Unit enemyUnit in UnitManager.Instance.GetEnemyUnitList())
             {
-                Debug.Log($"[EnemyAI] Enemies: {enemyUnit}");
                 if (TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete))
                 {
                     return true;
@@ -86,8 +82,6 @@ namespace DungeonMaster
 
         private bool TryTakeEnemyAIAction(Unit enemyUnit, Action onEnemyAIActionComplete)
         {
-            Debug.Log($"[EnemyAI] Enemy will atack: {enemyUnit}");
-
             EnemyAIAction bestEnemyAIAction = null;
             BaseAction bestBaseAction = null;
 

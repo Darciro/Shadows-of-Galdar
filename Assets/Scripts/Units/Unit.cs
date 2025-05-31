@@ -16,7 +16,7 @@ namespace DungeonMaster
         private GridPosition gridPosition;
         private HealthSystem healthSystem;
         private BaseAction[] baseActionArray;
-        private int actionPoints = ACTION_POINTS_MAX;
+        [SerializeField] private int actionPoints = ACTION_POINTS_MAX;
         [SerializeField] private bool isEnemy;
 
         private void Awake()

@@ -7,11 +7,12 @@ namespace DungeonMaster
     public class GridObject
     {
 
-        private GridSystem gridSystem;
+        private GridSystem<GridObject> gridSystem;
         private GridPosition gridPosition;
         private List<Unit> unitList;
+        private IInteractable interactable;
 
-        public GridObject(GridSystem gridSystem, GridPosition gridPosition)
+        public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition)
         {
             this.gridSystem = gridSystem;
             this.gridPosition = gridPosition;
@@ -61,6 +62,15 @@ namespace DungeonMaster
             }
         }
 
+        public IInteractable GetInteractable()
+        {
+            return interactable;
+        }
+
+        public void SetInteractable(IInteractable interactable)
+        {
+            this.interactable = interactable;
+        }
 
     }
 }

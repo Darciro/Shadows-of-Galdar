@@ -11,7 +11,11 @@ namespace DungeonMaster
         public static LevelGrid Instance { get; private set; }
         public event EventHandler OnAnyUnitMovedGridPosition;
         [SerializeField] private Transform gridDebugObjectPrefab;
-        private GridSystem gridSystem;
+        private GridSystem<GridObject> gridSystem;
+        [SerializeField] private int width = 30;
+        [SerializeField] private int height = 30;
+        [SerializeField] private float cellSize = .5f;
+
 
         private void Awake()
         {
@@ -22,8 +26,15 @@ namespace DungeonMaster
             }
             Instance = this;
 
-            gridSystem = new GridSystem(30, 30, 0.5f);
-            gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+            gridSystem = new GridSystem<GridObject>(
+                width, height, cellSize,
+                (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition)
+            );
+        }
+
+        private void Start()
+        {
+            Pathfinding.Instance.Setup(width, height, cellSize);
         }
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
@@ -71,6 +82,18 @@ namespace DungeonMaster
         {
             GridObject gridObject = gridSystem.GetGridObject(gridPosition);
             return gridObject.GetUnit();
+        }
+
+        public IInteractable GetInteractableAtGridPosition(GridPosition gridPosition)
+        {
+            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+            return gridObject.GetInteractable();
+        }
+
+        public void SetInteractableAtGridPosition(GridPosition gridPosition, IInteractable interactable)
+        {
+            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+            gridObject.SetInteractable(interactable);
         }
 
     }

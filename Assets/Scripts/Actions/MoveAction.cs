@@ -10,13 +10,8 @@ namespace DungeonMaster
         public event EventHandler OnStartMoving;
         public event EventHandler OnStopMoving;
         [SerializeField] private int maxMoveDistance = 4;
-        private Vector3 targetPosition;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            targetPosition = transform.position;
-        }
+        private List<Vector3> positionList;
+        private int currentPositionIndex;
 
         private void Update()
         {
@@ -25,42 +20,46 @@ namespace DungeonMaster
                 return;
             }
 
-            float stoppingDistance = 0.1f;
-            float moveSpeed = 4f;
+            Vector3 targetPosition = positionList[currentPositionIndex];
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, 0f);
 
-            // Ensure we're only working in the 2D XY plane
-            Vector3 currentPos = new Vector3(transform.position.x, transform.position.y, 0f);
-            Vector3 targetPos = new Vector3(targetPosition.x, targetPosition.y, 0f);
-
-            if (Vector3.Distance(currentPos, targetPos) > stoppingDistance)
+            float stoppingDistance = .1f;
+            if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
             {
-                Vector3 moveDirection = (targetPos - currentPos).normalized;
+                float moveSpeed = 4f;
                 transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-                // unitAnimator.SetBool("IsWalking", true);
-
-                // Optional: Flip sprite direction based on horizontal movement
-                if (moveDirection.x != 0)
-                {
-                    Vector3 localScale = transform.localScale;
-                    localScale.x = Mathf.Sign(moveDirection.x) * Mathf.Abs(localScale.x);
-                    transform.localScale = localScale;
-                }
             }
             else
             {
-                // unitAnimator.SetBool("IsWalking", false);
-                OnStopMoving?.Invoke(this, EventArgs.Empty);
-                ActionComplete();
-            }
+                currentPositionIndex++;
+                if (currentPositionIndex >= positionList.Count)
+                {
+                    OnStopMoving?.Invoke(this, EventArgs.Empty);
 
+                    ActionComplete();
+                }
+            }
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-            ActionStart(onActionComplete);
-            this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+            Debug.Log("[MoveAction] TakeAction");
+            List<GridPosition> pathGridPositionList = Pathfinding.Instance.FindPath(unit.GetGridPosition(), gridPosition, out int pathLength);
+
+            currentPositionIndex = 0;
+            positionList = new List<Vector3>();
+
+            foreach (GridPosition pathGridPosition in pathGridPositionList)
+            {
+                Debug.Log("[MoveAction] pathGridPosition");
+                positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
+            }
+
+            Debug.Log("[MoveAction] Invoke OnStartMoving");
             OnStartMoving?.Invoke(this, EventArgs.Empty);
+
+            ActionStart(onActionComplete);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList()
@@ -90,6 +89,23 @@ namespace DungeonMaster
                     if (LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
                     {
                         // Grid Position already occupied with another Unit
+                        continue;
+                    }
+
+                    if (!Pathfinding.Instance.IsWalkableGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    if (!Pathfinding.Instance.HasPath(unitGridPosition, testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    int pathfindingDistanceMultiplier = 10;
+                    if (Pathfinding.Instance.GetPathLength(unitGridPosition, testGridPosition) > maxMoveDistance * pathfindingDistanceMultiplier)
+                    {
+                        // Path length is too long
                         continue;
                     }
 

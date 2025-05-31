@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
-[RequireComponent(typeof(IAstarAI))]
-[RequireComponent(typeof(Seeker))]
 public class Character : CharacterStats
 {
-    [Header("Core Stats")]
+    /* [Header("Core Stats")]
     public float viewRadius = 2f;
     public float attackRange = 0.25f;
     public int attackDamage = 10;
@@ -384,5 +381,5 @@ public class Character : CharacterStats
         Gizmos.DrawWireSphere(transform.position, viewRadius);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
+    } */
 }

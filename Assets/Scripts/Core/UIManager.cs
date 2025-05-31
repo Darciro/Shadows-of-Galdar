@@ -143,7 +143,7 @@ public class UIManager : MonoBehaviour
         enemyNameText.text = enemy.name;
         enemyHpText.text = $"Health Points: {enemy.CurrentHealth} / {enemy.MaxHealth}";
         enemyActionPointsText.text = $"Action Points: {enemy.CurrentActionPoints} / {enemy.MaxActionPoints}";
-        enemyDamageText.text = $"Damage: {enemy.attackDamage}";
+        // enemyDamageText.text = $"Damage: {enemy.attackDamage}";
 
         Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
         screenPos += new Vector2(75, -75);

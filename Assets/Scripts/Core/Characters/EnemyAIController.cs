@@ -1,10 +1,8 @@
 using UnityEngine;
-using Pathfinding;
 
-[RequireComponent(typeof(Character), typeof(IAstarAI), typeof(Seeker))]
 public class EnemyAIController : MonoBehaviour
 {
-    [Header("Patrol & Chase Settings")]
+    /* [Header("Patrol & Chase Settings")]
     public AIState State = AIState.Patrolling;
     public float patrolRadius = 2.5f;
     public float patrolInterval = 3f;
@@ -200,5 +198,5 @@ public class EnemyAIController : MonoBehaviour
             }
         });
         // Note: EndTurn will be called by Character after actions complete.
-    }
+    } */
 }

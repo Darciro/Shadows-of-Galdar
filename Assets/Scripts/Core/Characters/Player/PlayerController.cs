@@ -1,11 +1,9 @@
 using UnityEngine;
-using Pathfinding;
 using TMPro;
 
-[RequireComponent(typeof(Character), typeof(Seeker))]
 public class PlayerController : MonoBehaviour
 {
-    private Character playerCharacter;
+    /* private Character playerCharacter;
     private Camera cam;
     private Seeker seeker;
 
@@ -229,5 +227,5 @@ public class PlayerController : MonoBehaviour
         previewPath = null;
         apCostTooltip.gameObject.SetActive(false);
         seeker.CancelCurrentPathRequest();
-    }
+    } */
 }

@@ -37,7 +37,6 @@ namespace DungeonMaster
         private void Unit_OnAnyUnitSpawned(object sender, EventArgs e)
         {
             Unit unit = sender as Unit;
-            Debug.Log($"[UnitManager] {unit} has spawned");
 
             unitList.Add(unit);
 
@@ -54,7 +53,6 @@ namespace DungeonMaster
         private void Unit_OnAnyUnitDead(object sender, EventArgs e)
         {
             Unit unit = sender as Unit;
-            Debug.Log($"[UnitManager] {unit} has died...");
 
             unitList.Remove(unit);
 

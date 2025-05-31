@@ -8,13 +8,22 @@ namespace DungeonMaster
     public class ShootAction : BaseAction
     {
 
+        public static event EventHandler<OnShootEventArgs> OnAnyShoot;
+        public event EventHandler<OnShootEventArgs> OnShoot;
+        public class OnShootEventArgs : EventArgs
+        {
+            public Unit targetUnit;
+            public Unit shootingUnit;
+        }
+
         private enum State
         {
             Aiming,
             Shooting,
             Cooloff,
         }
-        public event EventHandler OnShoot;
+
+        [SerializeField] private LayerMask obstaclesLayerMask;
         private State state;
         [SerializeField] private int maxShootDistance = 7;
         private float stateTimer;
@@ -78,7 +87,18 @@ namespace DungeonMaster
 
         private void Shoot()
         {
-            OnShoot?.Invoke(this, EventArgs.Empty);
+            OnAnyShoot?.Invoke(this, new OnShootEventArgs
+            {
+                targetUnit = targetUnit,
+                shootingUnit = unit
+            });
+
+            OnShoot?.Invoke(this, new OnShootEventArgs
+            {
+                targetUnit = targetUnit,
+                shootingUnit = unit
+            });
+
             targetUnit.Damage(40);
         }
 
@@ -129,12 +149,29 @@ namespace DungeonMaster
                         continue;
                     }
 
+                    Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                    Vector3 targetWorldPosition = targetUnit.GetWorldPosition();
+                    Vector3 shootDir = (targetWorldPosition - unitWorldPosition).normalized;
+
+                    // Optional vertical offset (like shoulder height in 3D), applied in Y for 2D
+                    Vector2 rayOrigin = new Vector2(unitWorldPosition.x, unitWorldPosition.y);
+                    Vector2 rayDirection = new Vector2(shootDir.x, shootDir.y);
+                    float distance = Vector2.Distance(rayOrigin, targetWorldPosition);
+
+                    // Cast the ray in 2D
+                    RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, distance, obstaclesLayerMask);
+                    if (hit.collider != null)
+                    {
+                        // Blocked by an obstacle
+                        continue;
+                    }
+
+
                     validGridPositionList.Add(testGridPosition);
                 }
             }
 
             return validGridPositionList;
-
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
