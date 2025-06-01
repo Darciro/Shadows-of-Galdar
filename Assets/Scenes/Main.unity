@@ -4825,6 +4825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4566fa8ddd8f7444da368b0da30fddad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridDebugObjectPrefab: {fileID: 0}
   width: 30
   height: 30
   cellSize: 0.5
@@ -38775,6 +38776,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8675342532198028450, guid: eee2474fdc169a745b2c16eeb972c621, type: 3}
+      propertyPath: grenadeProjectilePrefab
+      value: 
+      objectReference: {fileID: 5514173873250789827, guid: dbfdb00fdc96fc04d8c7ca25e92081d3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44370,7 +44375,6 @@ MonoBehaviour:
   obstaclesLayerMask:
     serializedVersion: 2
     m_Bits: 2176
-  activateDebugger: 0
 --- !u!4 &1994259542
 Transform:
   m_ObjectHideFlags: 0
