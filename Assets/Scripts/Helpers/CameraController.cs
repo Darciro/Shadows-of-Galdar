@@ -30,12 +30,10 @@ namespace DungeonMaster
 
         private void HandleZoom()
         {
-            float scrollInput = Input.mouseScrollDelta.y;
-
             if (InputManager.Instance.GetCameraZoomAmount() != 0f)
             {
                 float currentZoom = cineCam.Lens.OrthographicSize;
-                currentZoom -= InputManager.Instance.GetCameraZoomAmount() * zoomSpeed * Time.deltaTime;
+                currentZoom += InputManager.Instance.GetCameraZoomAmount() * zoomSpeed * Time.deltaTime;
                 currentZoom = Mathf.Clamp(currentZoom, MIN_ORTHO_SIZE, MAX_ORTHO_SIZE);
                 cineCam.Lens.OrthographicSize = currentZoom;
             }

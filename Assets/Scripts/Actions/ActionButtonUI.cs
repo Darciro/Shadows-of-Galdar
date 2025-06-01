@@ -8,7 +8,6 @@ namespace DungeonMaster
 {
     public class ActionButtonUI : MonoBehaviour
     {
-
         [SerializeField] private TextMeshProUGUI textMeshPro;
         [SerializeField] private Button button;
         [SerializeField] private GameObject selectedGameObject;

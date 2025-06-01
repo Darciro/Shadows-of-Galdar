@@ -8,6 +8,5 @@ namespace DungeonMaster
     {
         public GridPosition gridPosition;
         public int actionValue;
-
     }
 }

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Tilemaps;
+using Edgar.Unity;
+using System.Linq;
 
 namespace DungeonMaster
 {
@@ -19,8 +22,11 @@ namespace DungeonMaster
             public Material material;
         }
 
-
         [SerializeField] private List<GridVisualTypeMaterial> gridVisualTypeMaterialList;
+        private List<Tilemap> floorTilemaps;
+
+        [Header("Grid view")]
+        [SerializeField] private bool alwaysShowGrid = false;
 
         private void Awake()
         {
@@ -34,6 +40,10 @@ namespace DungeonMaster
 
         private void Start()
         {
+            floorTilemaps = FindObjectsByType<Tilemap>(FindObjectsSortMode.None)
+                .Where(tm => tm.gameObject.name == "Level 0 - Floor")
+                .ToList();
+
             gridSystemVisualSingleArray = new GridSystemVisualSingle[
                 LevelGrid.Instance.GetWidth(),
                 LevelGrid.Instance.GetHeight()
@@ -118,12 +128,30 @@ namespace DungeonMaster
             ShowGridPositionList(gridPositionList, gridVisualType);
         }
 
-        public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
+        /* public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
         {
             foreach (GridPosition gridPosition in gridPositionList)
             {
-                // gridSystemVisualSingleArray[gridPosition.x, gridPosition.y].Show(GetGridVisualTypeMaterial(gridVisualType));
                 gridSystemVisualSingleArray[gridPosition.x, gridPosition.y].Show(gridVisualType);
+            }
+        } */
+
+        public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
+        {
+            foreach (var gridPosition in gridPositionList)
+            {
+                Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+
+                // Check *any* floor tilemap for a tile at this world position
+                foreach (var floorTilemap in floorTilemaps)
+                {
+                    Vector3Int cellPos = floorTilemap.WorldToCell(worldPosition);
+                    if (floorTilemap.HasTile(cellPos))
+                    {
+                        gridSystemVisualSingleArray[gridPosition.x, gridPosition.y].Show(gridVisualType);
+                        break;
+                    }
+                }
             }
         }
 

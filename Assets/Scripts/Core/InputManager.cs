@@ -84,27 +84,11 @@ namespace DungeonMaster
             return playerInputActions.Player.CameraZoom.ReadValue<float>();
 #else
             float zoomAmount = 0f;
-
-            if (Input.mouseScrollDelta.y > 0)
-            {
-                zoomAmount = -1f;
-            }
-            if (Input.mouseScrollDelta.y < 0)
-            {
-                zoomAmount = +1f;
-            }
-
-            return zoomAmount;
-#endif
-        }
-
-        public float GetCameraZoomAmountOLD()
-        {
-            float zoomAmount = 0f;
             if (Input.mouseScrollDelta.y > 0) zoomAmount = +1f;
             if (Input.mouseScrollDelta.y < 0) zoomAmount = -1f;
 
             return zoomAmount;
+#endif
         }
     }
 }

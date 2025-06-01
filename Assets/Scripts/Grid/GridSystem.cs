@@ -10,13 +10,16 @@ namespace DungeonMaster
         private int width;
         private int height;
         private float cellSize;
+        private float isoTileHalfWidth;
+        private float isoTileHalfHeightStep;
         private TGridObject[,] gridObjectArray;
 
-        public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
+        public GridSystem(int width, int height, float isoTileHalfWidth, float isoTileHalfHeightStep, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
         {
             this.width = width;
             this.height = height;
-            this.cellSize = cellSize;
+            this.isoTileHalfWidth = isoTileHalfWidth;
+            this.isoTileHalfHeightStep = isoTileHalfHeightStep;
 
             gridObjectArray = new TGridObject[width, height];
 
@@ -33,14 +36,23 @@ namespace DungeonMaster
 
         public Vector3 GetWorldPosition(GridPosition gridPosition)
         {
-            return new Vector3(gridPosition.x, gridPosition.y) * cellSize;
+            float worldX = (gridPosition.x - gridPosition.y) * this.isoTileHalfWidth;
+            float worldY = (gridPosition.x + gridPosition.y) * this.isoTileHalfHeightStep;
+            return new Vector3(worldX, worldY); // Assuming Z=0 for now
         }
+
 
         public GridPosition GetGridPosition(Vector3 worldPosition)
         {
+            float xMinusY = worldPosition.x / this.isoTileHalfWidth;
+            float xPlusY = worldPosition.y / this.isoTileHalfHeightStep;
+
+            float gridXFloat = (xMinusY + xPlusY) / 2f;
+            float gridYFloat = (xPlusY - xMinusY) / 2f;
+
             return new GridPosition(
-                Mathf.RoundToInt(worldPosition.x / cellSize),
-                Mathf.RoundToInt(worldPosition.y / cellSize)
+                Mathf.RoundToInt(gridXFloat),
+                Mathf.RoundToInt(gridYFloat)
             );
         }
 

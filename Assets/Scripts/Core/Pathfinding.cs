@@ -16,10 +16,10 @@ namespace DungeonMaster
         [SerializeField] private Transform gridDebugObjectPrefab;
         [SerializeField] private LayerMask obstaclesLayerMask;
 
-
         private int width;
         private int height;
-        private float cellSize;
+        private float isoTileActualWidth = 1f; // Example: Width of your tile sprite (e.g., 64 pixels if 1 unit = 1 pixel)
+        private float isoTileActualHeightStep = 0.5f; // Example: Effective vertical distance between tile centers (e.g., 32 pixels)
         private GridSystem<PathNode> gridSystem;
 
         private void Awake()
@@ -34,16 +34,21 @@ namespace DungeonMaster
 
         }
 
-        public void Setup(int width, int height, float cellSize)
+        public void Setup(int width, int height, float isoTileActualWidth, float isoTileActualHeightStep)
         {
             this.width = width;
             this.height = height;
-            this.cellSize = cellSize;
 
-            gridSystem = new GridSystem<PathNode>(width, height, cellSize,
-                (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
+            float halfIsoWidth = isoTileActualWidth / 2f;
+            float halfIsoHeightStep = isoTileActualHeightStep / 2f;
 
-            //gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+            gridSystem = new GridSystem<PathNode>(
+                width,
+                height,
+                halfIsoWidth,           // Pass the calculated half-width
+                halfIsoHeightStep,      // Pass the calculated half-height step
+                (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition)
+            );
 
             for (int x = 0; x < width; x++)
             {
