@@ -42,7 +42,7 @@ namespace DungeonMaster
             }
         }
 
-        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        /* public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
             Debug.Log("[MoveAction] TakeAction");
             List<GridPosition> pathGridPositionList = Pathfinding.Instance.FindPath(unit.GetGridPosition(), gridPosition, out int pathLength);
@@ -60,7 +60,38 @@ namespace DungeonMaster
             OnStartMoving?.Invoke(this, EventArgs.Empty);
 
             ActionStart(onActionComplete);
+        } */
+
+        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+        {
+            Debug.Log("[MoveAction] TakeAction");
+
+            // 1. Convert grid positions to world positions for A*
+            Vector3 startWorldPos = LevelGrid.Instance.GetWorldPosition(unit.GetGridPosition());
+            Vector3 endWorldPos = LevelGrid.Instance.GetWorldPosition(gridPosition);
+
+            // 2. Call A* pathfinding service, handle async callback
+            AstarPathfindingService.Instance.FindPath(startWorldPos, endWorldPos, (vectorPath) =>
+            {
+                if (vectorPath == null || vectorPath.Count == 0)
+                {
+                    Debug.LogWarning("[MoveAction] No valid path found!");
+                    // Handle path not found, maybe call onActionComplete?
+                    onActionComplete?.Invoke();
+                    return;
+                }
+
+                // 3. Store path as before, for your movement logic
+                currentPositionIndex = 0;
+                positionList = vectorPath;
+
+                Debug.Log("[MoveAction] Invoke OnStartMoving");
+                OnStartMoving?.Invoke(this, EventArgs.Empty);
+
+                ActionStart(onActionComplete);
+            });
         }
+
 
         public override List<GridPosition> GetValidActionGridPositionList()
         {
