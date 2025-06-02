@@ -1,3 +1,4 @@
+#if !DISABLE_MY_CLASS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,3 +21,4 @@ namespace DungeonMaster
         }
     }
 }
+#endif

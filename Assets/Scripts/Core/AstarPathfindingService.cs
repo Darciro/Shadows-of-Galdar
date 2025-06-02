@@ -1,23 +1,37 @@
-using UnityEngine;
-using Pathfinding;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Pathfinding;
 
-public class AstarPathfindingService : MonoBehaviour
+namespace DungeonMaster
 {
-    public static AstarPathfindingService Instance;
-    private Seeker seeker;
-    private void Awake()
+    public class AstarPathfindingService : MonoBehaviour
     {
-        Instance = this;
-        seeker = GetComponent<Seeker>();
-    }
-    public void FindPath(Vector3 startWorldPos, Vector3 endWorldPos, Action<List<Vector3>> onPathComplete)
-    {
-        seeker.StartPath(startWorldPos, endWorldPos, path =>
+        public static AstarPathfindingService Instance { get; private set; }
+        private Seeker seeker;
+
+        private void Awake()
         {
-            if (!path.error) onPathComplete?.Invoke(path.vectorPath);
-            else onPathComplete?.Invoke(null);
-        });
+            if (Instance != null && Instance != this) Destroy(this);
+            else Instance = this;
+            seeker = GetComponent<Seeker>();
+            if (seeker == null)
+                seeker = gameObject.AddComponent<Seeker>();
+        }
+
+        public void FindPath(Vector3 start, Vector3 end, Action<List<Vector3>> callback)
+        {
+            seeker.StartPath(start, end, (Path p) =>
+            {
+                if (p.error)
+                {
+                    callback?.Invoke(null);
+                }
+                else
+                {
+                    callback?.Invoke(p.vectorPath);
+                }
+            });
+        }
     }
 }

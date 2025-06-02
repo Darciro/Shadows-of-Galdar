@@ -77,7 +77,7 @@ namespace DungeonMaster
             isOpen = true;
             // animator.SetBool("IsOpen", isOpen);
             chestSpriteRenderer.sprite = openChestSpritePrefab;
-            Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, true);
+            // Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, true);
         }
 
         private void CloseDoor()
@@ -86,7 +86,7 @@ namespace DungeonMaster
             isOpen = false;
             // animator.SetBool("IsOpen", isOpen);
             chestSpriteRenderer.sprite = closeChestSpritePrefab;
-            Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, false);
+            // Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, false);
         }
     }
 }

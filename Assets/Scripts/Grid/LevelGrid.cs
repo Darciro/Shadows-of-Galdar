@@ -1,38 +1,22 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using Pathfinding;
 
 namespace DungeonMaster
 {
     public class LevelGrid : MonoBehaviour
     {
-
         public static LevelGrid Instance { get; private set; }
         public event EventHandler OnAnyUnitMovedGridPosition;
+
         [SerializeField] private Transform gridDebugObjectPrefab;
-        private GridSystem<GridObject> gridSystem;
         [SerializeField] private int width = 30;
         [SerializeField] private int height = 30;
-        // [SerializeField] private float cellSize = .5f; // Remove or repurpose
-        [SerializeField] private float isoTileActualWidth = 1f; // Example: Width of your tile sprite (e.g., 64 pixels if 1 unit = 1 pixel)
-        [SerializeField] private float isoTileActualHeightStep = 0.5f; // Example: Effective vertical distance between tile centers (e.g., 32 pixels)
+        [SerializeField] private float isoTileActualWidth = 1f;     // width of a single tile in world units
+        [SerializeField] private float isoTileActualHeightStep = 0.5f; // vertical step (isometric grid)
 
-
-        /* private void Awake()
-        {
-            if (Instance != null)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
-
-            gridSystem = new GridSystem<GridObject>(
-                width, height, cellSize,
-                (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition)
-            );
-        } */
+        private GridSystem<GridObject> gridSystem;
 
         private void Awake()
         {
@@ -43,49 +27,55 @@ namespace DungeonMaster
             }
             Instance = this;
 
-            // Calculate half dimensions to pass to GridSystem
             float halfWidth = isoTileActualWidth / 2f;
             float halfHeightStep = isoTileActualHeightStep / 2f;
 
             gridSystem = new GridSystem<GridObject>(
-                width, height, halfWidth, halfHeightStep, // Pass new dimensions
+                width,
+                height,
+                isoTileActualWidth,
                 (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition)
             );
-            // gridSystem.CreateDebugObjects(gridDebugObjectPrefab); // This will now place debug objects isometrically
+
+            // Uncomment if you want to visualize debug grid objects
+            // gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
         }
 
         /* private void Start()
         {
-            Pathfinding.Instance.Setup(width, height, cellSize);
-        } */
+            // --- A* Pathfinding GridGraph setup ---
+            // NOTE: This assumes you have an AstarPath object in the scene!
+            AstarData data = AstarPath.active.data;
+            GridGraph grid = data.gridGraph ?? data.AddGraph(typeof(GridGraph)) as GridGraph;
+            grid.width = width;
+            grid.depth = height;
+            grid.nodeSize = isoTileActualWidth / 2f;
+            grid.center = transform.position;
+            grid.rotation = new Vector3(0, 0, 45); // isometric diamond alignment
+            grid.isometricAngle = GridGraph.StandardIsometricAngle;
+            grid.aspectRatio = 1.0f;
+            grid.neighbours = NumNeighbours.Eight;
+            grid.collision.use2D = true;
+            // Optionally set: grid.collision.mask = obstaclesLayerMask;
 
-        private void Start()
-        {
-            // Pathfinding Setup needs world-space cell size for raycasting against obstacles.
-            // This might need careful consideration. If obstacles are aligned with the isometric grid,
-            // the existing raycast logic in Pathfinding.cs might still work conceptually,
-            // as it uses LevelGrid.GetWorldPosition for the raycast origin.
-            // The 'cellSize' for pathfinding's internal grid representation can remain abstract,
-            // but if it's used for any world calculations, it should be the isometric step.
-            Pathfinding.Instance.Setup(width, height, isoTileActualWidth, isoTileActualHeightStep); // Pass the new dimension fields
-        }
+            AstarPath.active.Scan();
+        }*/
+
+        // ========== UNIT GRID LOGIC ==========
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
         {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            gridObject.AddUnit(unit);
-        }
-
-        public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition)
-        {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            return gridObject.GetUnitList();
+            gridSystem.GetGridObject(gridPosition).AddUnit(unit);
         }
 
         public void RemoveUnitAtGridPosition(GridPosition gridPosition, Unit unit)
         {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            gridObject.RemoveUnit(unit);
+            gridSystem.GetGridObject(gridPosition).RemoveUnit(unit);
+        }
+
+        public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition)
+        {
+            return gridSystem.GetGridObject(gridPosition).GetUnitList();
         }
 
         public void UnitMovedGridPosition(Unit unit, GridPosition fromGridPosition, GridPosition toGridPosition)
@@ -95,39 +85,36 @@ namespace DungeonMaster
             OnAnyUnitMovedGridPosition?.Invoke(this, EventArgs.Empty);
         }
 
-        public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);
+        // ========== GRID INFO/HELPERS ==========
 
-        public Vector3 GetWorldPosition(GridPosition gridPosition) => gridSystem.GetWorldPosition(gridPosition);
+        public GridPosition GetGridPosition(Vector3 worldPosition)
+            => gridSystem.GetGridPosition(worldPosition);
 
-        public bool IsValidGridPosition(GridPosition gridPosition) => gridSystem.IsValidGridPosition(gridPosition);
+        public Vector3 GetWorldPosition(GridPosition gridPosition)
+            => gridSystem.GetWorldPosition(gridPosition);
+
+        public bool IsValidGridPosition(GridPosition gridPosition)
+            => gridSystem.IsValidGridPosition(gridPosition);
 
         public int GetWidth() => gridSystem.GetWidth();
-
         public int GetHeight() => gridSystem.GetHeight();
 
         public bool HasAnyUnitOnGridPosition(GridPosition gridPosition)
-        {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            return gridObject.HasAnyUnit();
-        }
+            => gridSystem.GetGridObject(gridPosition).HasAnyUnit();
 
         public Unit GetUnitAtGridPosition(GridPosition gridPosition)
-        {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            return gridObject.GetUnit();
-        }
+            => gridSystem.GetGridObject(gridPosition).GetUnit();
+
+        // ========== INTERACTABLES ==========
 
         public IInteractable GetInteractableAtGridPosition(GridPosition gridPosition)
-        {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            return gridObject.GetInteractable();
-        }
+            => gridSystem.GetGridObject(gridPosition).GetInteractable();
 
         public void SetInteractableAtGridPosition(GridPosition gridPosition, IInteractable interactable)
-        {
-            GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-            gridObject.SetInteractable(interactable);
-        }
+            => gridSystem.GetGridObject(gridPosition).SetInteractable(interactable);
 
+        // ========== DEBUG ==========
+
+        // Optionally, add methods for debugging or visualization as needed
     }
 }

@@ -1,41 +1,44 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace DungeonMaster
 {
     public abstract class BaseAction : MonoBehaviour
     {
+        // Static Events
         public static event EventHandler OnAnyActionStarted;
         public static event EventHandler OnAnyActionCompleted;
 
+        // Protected Fields
         protected Unit unit;
         protected bool isActive;
         protected Action onActionComplete;
 
+        // MonoBehaviour Lifecycle
         protected virtual void Awake()
         {
             unit = GetComponent<Unit>();
         }
 
+        // Abstract Methods
         public abstract string GetActionName();
-
         public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+        public abstract List<GridPosition> GetValidActionGridPositionList();
+        public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
 
+        // Virtual Methods
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
         {
-            List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
-            return validGridPositionList.Contains(gridPosition);
+            return GetValidActionGridPositionList().Contains(gridPosition);
         }
-
-        public abstract List<GridPosition> GetValidActionGridPositionList();
 
         public virtual int GetActionPointsCost()
         {
             return 1;
         }
 
+        // Action Control Flow
         protected void ActionStart(Action onActionComplete)
         {
             isActive = true;
@@ -47,42 +50,34 @@ namespace DungeonMaster
         protected void ActionComplete()
         {
             isActive = false;
-            onActionComplete();
+            onActionComplete?.Invoke();
 
             OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
         }
 
+        // Accessors
         public Unit GetUnit()
         {
             return unit;
         }
 
+        // AI Decision-Making
         public EnemyAIAction GetBestEnemyAIAction()
         {
-            List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+            List<EnemyAIAction> actions = new List<EnemyAIAction>();
 
-            List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
-
-            foreach (GridPosition gridPosition in validActionGridPositionList)
+            foreach (GridPosition gridPos in GetValidActionGridPositionList())
             {
-                EnemyAIAction enemyAIAction = GetEnemyAIAction(gridPosition);
-                enemyAIActionList.Add(enemyAIAction);
+                actions.Add(GetEnemyAIAction(gridPos));
             }
 
-            if (enemyAIActionList.Count > 0)
+            if (actions.Count == 0)
             {
-                enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
-                return enemyAIActionList[0];
-            }
-            else
-            {
-                // No possible Enemy AI Actions
                 return null;
             }
 
+            actions.Sort((a, b) => b.actionValue.CompareTo(a.actionValue));
+            return actions[0];
         }
-
-        public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
-
     }
 }

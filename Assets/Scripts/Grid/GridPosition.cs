@@ -1,5 +1,4 @@
-using System;
-
+[System.Serializable]
 public struct GridPosition
 {
     public int x;
@@ -11,47 +10,17 @@ public struct GridPosition
         this.y = y;
     }
 
+    public static GridPosition operator +(GridPosition a, GridPosition b)
+        => new GridPosition(a.x + b.x, a.y + b.y);
+
     public override bool Equals(object obj)
     {
-        return obj is GridPosition position &&
-               x == position.x &&
-               y == position.y;
+        if (!(obj is GridPosition)) return false;
+        GridPosition other = (GridPosition)obj;
+        return x == other.x && y == other.y;
     }
 
-    public bool Equals(GridPosition other)
-    {
-        return this == other;
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(x, y);
-    }
-
-    public override string ToString()
-    {
-        return $"x: {x}; y: {y}";
-    }
-
-    public static bool operator ==(GridPosition a, GridPosition b)
-    {
-        return a.x == b.x && a.y == b.y;
-    }
-
-    public static bool operator !=(GridPosition a, GridPosition b)
-    {
-        return !(a == b);
-    }
-
-    public static GridPosition operator +(GridPosition a, GridPosition b)
-    {
-        return new GridPosition(a.x + b.x, a.y + b.y);
-    }
-
-    public static GridPosition operator -(GridPosition a, GridPosition b)
-    {
-        return new GridPosition(a.x - b.x, a.y - b.y);
-    }
-
-
+    public override int GetHashCode() => x * 1000 + y;
+    public static bool operator ==(GridPosition a, GridPosition b) => a.Equals(b);
+    public static bool operator !=(GridPosition a, GridPosition b) => !a.Equals(b);
 }

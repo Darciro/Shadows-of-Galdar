@@ -4826,8 +4826,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridDebugObjectPrefab: {fileID: 0}
-  width: 30
-  height: 30
+  width: 100
+  height: 100
   isoTileActualWidth: 1
   isoTileActualHeightStep: 0.5
 --- !u!4 &305263244
@@ -44590,6 +44590,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e799c5983240ea0428ee717d1559fb4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridDebugObjectPrefab: {fileID: 0}
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &1994259542
 Transform:
   m_ObjectHideFlags: 0
